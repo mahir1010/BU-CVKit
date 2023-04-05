@@ -5,7 +5,6 @@ import numpy as np
 
 from cvkit import MAGIC_NUMBER
 from cvkit.pose_estimation import Part
-from cvkit.pose_estimation.data_readers import initialize_datastore_reader
 
 
 def rotate(p, rotation, scale=1.0, is_inv=False):
@@ -99,6 +98,7 @@ def build_batch_input_data(csv_data, index, batch=12, seq_len=60):
 
 
 def convert_numpy_to_datastore(pickled_data: np.ndarray, header_names, flavor, output_path):
+    from cvkit.pose_estimation.data_readers import initialize_datastore_reader
     assert pickled_data.ndim == 3 and pickled_data.shape[1] == len(header_names)
     datastore = initialize_datastore_reader(header_names, output_path, flavor)
     for index, row in enumerate(pickled_data):

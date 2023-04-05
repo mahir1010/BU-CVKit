@@ -3,7 +3,7 @@ requires = ["setuptools>=67.0"]
 build-backend = "setuptools.build_meta"
 [project]
 name = "bu_cvkit"
-version = "0.0.1"
+version = "0.0.2"
 authors = [
   { name="Mahir Patel", email="mahirp@bu.edu" },
 ]
@@ -24,3 +24,5 @@ dependencies = ["deffcode==0.2.5",
 "PyYAML==6.0",
 "scipy==1.10.1",
 "tensorflow==2.11.0"]
+[project.urls]
+repository = "https://github.com/mahir1010/BU-CVKit"
