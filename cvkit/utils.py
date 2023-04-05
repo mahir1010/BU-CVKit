@@ -1,0 +1,1 @@
+MAGIC_NUMBER = -4668
