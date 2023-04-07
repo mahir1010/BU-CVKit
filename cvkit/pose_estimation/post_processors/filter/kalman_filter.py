@@ -1,9 +1,10 @@
-from cvkit.pose_estimation.post_processors.post_prcessor_interface import PostProcessor
-from cvkit.pose_estimation import Skeleton,Part
 import numpy as np
 from filterpy.common import Q_discrete_white_noise
-
 from filterpy.kalman import KalmanFilter
+
+from cvkit.pose_estimation import Skeleton
+from cvkit.pose_estimation.post_processors.post_prcessor_interface import PostProcessor
+
 
 class KalmanFilter(PostProcessor):
     PROCESS_NAME = "Kalman Filtering"
@@ -65,45 +66,46 @@ class KalmanFilter(PostProcessor):
         else:
             return None
 
-def generate_F_matrix(dimension,dt):
 
-    assert dimension>1
+def generate_F_matrix(dimension, dt):
+    assert dimension > 1
 
-    arr=[]
+    arr = []
     for i in range(dimension):
-        row=[0]*dimension*3
-        row[i]=1
-        row[i+dimension]=dt
-        row[i+2*dimension]= 0.5*dt**2
+        row = [0] * dimension * 3
+        row[i] = 1
+        row[i + dimension] = dt
+        row[i + 2 * dimension] = 0.5 * dt ** 2
         arr.append(row)
     for i in range(dimension):
-        row=[0]*dimension*3
-        row[i]=0
-        row[i+dimension]=1
-        row[i+2*dimension]= dt
+        row = [0] * dimension * 3
+        row[i] = 0
+        row[i + dimension] = 1
+        row[i + 2 * dimension] = dt
         arr.append(row)
     for i in range(dimension):
-        row=[0]*dimension*3
-        row[i]=0
-        row[i+dimension]=0
-        row[i+2*dimension]= 1
+        row = [0] * dimension * 3
+        row[i] = 0
+        row[i + dimension] = 0
+        row[i + 2 * dimension] = 1
         arr.append(row)
     return np.array(arr)
+
 
 class Tracker:
     def __init__(self, data, dt):
         self.dt = dt
-        assert np.ndim(data)==1
+        assert np.ndim(data) == 1
         self.dimensions = np.shape(data)[-1]
-        self.tracker = Tracker.get_kalman_filter(data,self.dimensions,self.dt)
+        self.tracker = Tracker.get_kalman_filter(data, self.dimensions, self.dt)
 
     @staticmethod
-    def get_kalman_filter(data,dimensions,dt):
+    def get_kalman_filter(data, dimensions, dt):
         kalman = KalmanFilter(dimensions * 3, dimensions)
-        kalman.x = np.hstack((data, [0.0]*dimensions*2)).astype(np.float32)
-        kalman.F = generate_F_matrix(dimensions,dt)
-        kalman.H = np.array([[0]*dimensions*3]*dimensions)
-        kalman.H[list(range(dimensions)),list(range(dimensions))]=1
+        kalman.x = np.hstack((data, [0.0] * dimensions * 2)).astype(np.float32)
+        kalman.F = generate_F_matrix(dimensions, dt)
+        kalman.H = np.array([[0] * dimensions * 3] * dimensions)
+        kalman.H[list(range(dimensions)), list(range(dimensions))] = 1
         kalman.P *= 100
         kalman.R *= 0.8
         kalman.Q = Q_discrete_white_noise(dimensions, dt=dt, block_size=3, order_by_dim=False)

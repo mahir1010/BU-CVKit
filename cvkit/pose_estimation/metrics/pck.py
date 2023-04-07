@@ -6,6 +6,7 @@ def distance_map(ref, points):
     return tf.vectorized_map(fn=lambda t: tf.keras.backend.sqrt(1e-9 + tf.reduce_sum(tf.keras.backend.square(ref - t))),
                              elems=points)
 
+
 def build_pck_metric(n_kps, threshold, per_kp=False):
     assert 0. < threshold < 1.0 and n_kps > 0
     if not per_kp:

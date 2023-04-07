@@ -2,8 +2,8 @@ import os
 
 import numpy as np
 
-from cvkit.pose_estimation.config import PoseEstimationConfig
 from cvkit.pose_estimation import Part
+from cvkit.pose_estimation.config import PoseEstimationConfig
 from cvkit.pose_estimation.data_readers import DeeplabcutDataStore
 from cvkit.pose_estimation.post_processors.post_prcessor_interface import PostProcessor
 from cvkit.pose_estimation.reconstruction.DLT import DLTdecon

@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 name = "bu_cvkit"
 version = "0.0.2"
 authors = [
-  { name="Mahir Patel", email="mahirp@bu.edu" },
+    { name = "Mahir Patel", email = "mahirp@bu.edu" },
 ]
 description = "A toolkit to accelerate computer vision research"
 requires-python = ">=3.10"
@@ -17,12 +17,12 @@ classifiers = [
 ]
 
 dependencies = ["deffcode==0.2.5",
-"filterpy==1.4.5",
-"numpy==1.24.2",
-"opencv_python_headless==4.7.0.72",
-"pandas==1.5.3",
-"PyYAML==6.0",
-"scipy==1.10.1",
-"tensorflow==2.11.0"]
+    "filterpy==1.4.5",
+    "numpy==1.24.2",
+    "opencv_python_headless==4.7.0.72",
+    "pandas==1.5.3",
+    "PyYAML==6.0",
+    "scipy==1.10.1",
+    "tensorflow==2.11.0"]
 [project.urls]
 repository = "https://github.com/mahir1010/BU-CVKit"

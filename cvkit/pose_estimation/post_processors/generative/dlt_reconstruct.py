@@ -1,7 +1,7 @@
 import numpy as np
 
-from cvkit.pose_estimation.config import PoseEstimationConfig
 from cvkit.pose_estimation import Skeleton
+from cvkit.pose_estimation.config import PoseEstimationConfig
 from cvkit.pose_estimation.data_readers.cvkit_datastore import CVKitDataStore3D
 from cvkit.pose_estimation.post_processors.post_prcessor_interface import PostProcessor
 from cvkit.pose_estimation.reconstruction.DLT import DLTrecon
@@ -25,7 +25,7 @@ class DLTReconstruction(PostProcessor):
         self.scale = scale
         self.translation_matrix = np.array(global_config.translation_matrix) * self.scale
         assert self.translation_matrix.shape == (3,)
-        self.out_csv=None
+        self.out_csv = None
 
     def process(self, data_store):
         self.out_csv = CVKitDataStore3D(self.body_parts, None)

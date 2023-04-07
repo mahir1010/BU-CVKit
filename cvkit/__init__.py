@@ -1,7 +1,7 @@
-from cvkit.utils import MAGIC_NUMBER
-
 import importlib
 import pkgutil
+
+from cvkit.utils import MAGIC_NUMBER
 
 discovered_plugins = {
     name: importlib.import_module(name)
@@ -10,11 +10,11 @@ discovered_plugins = {
     if name.startswith('cvkit_')
 }
 
-pose_estimation_plugin={}
-for plugin,package in discovered_plugins.items():
+pose_estimation_plugin = {}
+for plugin, package in discovered_plugins.items():
     try:
         if package.CLASS == "Pose Estimation":
-            pose_estimation_plugin[plugin]=package
+            pose_estimation_plugin[plugin] = package
     except Exception as ex:
         pass
 
