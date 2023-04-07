@@ -7,7 +7,7 @@ class RegionFilter2D(PostProcessor):
 
     def __init__(self, uncertainty_regions: list):
         super(RegionFilter2D, self).__init__(None)
-        self.uncertainty_region = uncertainty_regions
+        self.uncertainty_regions = uncertainty_regions
 
     def process(self, data_store):
         self.data_store = data_store
