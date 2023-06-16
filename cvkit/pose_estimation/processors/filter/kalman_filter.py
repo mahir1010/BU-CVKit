@@ -1,27 +1,37 @@
 import numpy as np
 from filterpy.common import Q_discrete_white_noise
-from filterpy.kalman import KalmanFilter
+from filterpy.kalman import KalmanFilter as Filter
 
 from cvkit.pose_estimation import Skeleton
-from cvkit.pose_estimation.post_processors.post_prcessor_interface import PostProcessor
+from cvkit.pose_estimation.processors.processor_interface import Processor, ProcessorMetaData
 
 
-class KalmanFilter(PostProcessor):
-    PROCESS_NAME = "Kalman Filtering"
+class KalmanFilter(Processor):
+    PROCESSOR_NAME = "Kalman Filtering"
+    PROCESSOR_ID = "cvkit_kalman_filter"
+    META_DATA = {'target_column': ProcessorMetaData('Target Part', ProcessorMetaData.BODY_PART),
+                 'framerate': ProcessorMetaData('Framerate', ProcessorMetaData.FLOAT),
+                 'skip': ProcessorMetaData('Skip Invalids', ProcessorMetaData.BOOLEAN, True),
+                 'threshold': ProcessorMetaData('Threshold', ProcessorMetaData.FLOAT, 0.6, 0.0, 1.0)}
+    PROCESSOR_SUMMARY = "Constant acceleration Kalman Filter"
+
+    DISTRIBUTED = True
 
     def __init__(self, target_column, framerate, skip=True, threshold=0.6):
-        super(KalmanFilter, self).__init__(target_column)
+        super(KalmanFilter, self).__init__()
+        self.target_column = target_column
+        self.framerate = framerate
         self.threshold = threshold
         self.skip = skip
         self.dt = float(1 / framerate)
 
     def process(self, data_store):
-        self.data_store = data_store
-        self.data_ready = False
-        self.progress = 0
+        self._data_store = data_store
+        self._data_ready = False
+        self._progress = 0
         tracker = None
-        for index, point in self.data_store.part_iterator(self.target_column):
-            self.progress = int(index / len(self.data_store) * 100)
+        for index, point in self._data_store.part_iterator(self.target_column):
+            self._progress = int(index / len(self._data_store) * 100)
             if self.skip:
                 if point < self.threshold:
                     # new_tracker = Tracker(point, self.dt)
@@ -38,7 +48,7 @@ class KalmanFilter(PostProcessor):
                     else:
                         # self.data.append(tracker.update(point).tolist())
                         point[:3] = tracker.update(point).tolist()
-                        self.data_store.set_part(index, point)
+                        self._data_store.set_part(index, point)
             else:
                 if point < self.threshold:
                     if tracker is not None:
@@ -46,7 +56,7 @@ class KalmanFilter(PostProcessor):
                         p = tracker.update(p).tolist()
                         # self.data.append(p)
                         point[:3] = p
-                        self.data_store.set_part(index, point)
+                        self._data_store.set_part(index, point)
                     else:
                         self.data.append(None)
                 else:
@@ -56,13 +66,13 @@ class KalmanFilter(PostProcessor):
                     else:
                         # self.data.append(tracker.update(point).tolist())
                         point[:3] = tracker.update(point).tolist()
-                        self.data_store.set_part(index, point)
-        self.data_ready = True
-        self.progress = 100
+                        self._data_store.set_part(index, point)
+        self._data_ready = True
+        self._progress = 100
 
     def get_output(self):
-        if self.data_ready:
-            return self.data_store
+        if self._data_ready:
+            return self._data_store
         else:
             return None
 
@@ -101,7 +111,7 @@ class Tracker:
 
     @staticmethod
     def get_kalman_filter(data, dimensions, dt):
-        kalman = KalmanFilter(dimensions * 3, dimensions)
+        kalman = Filter(dimensions * 3, dimensions)
         kalman.x = np.hstack((data, [0.0] * dimensions * 2)).astype(np.float32)
         kalman.F = generate_F_matrix(dimensions, dt)
         kalman.H = np.array([[0] * dimensions * 3] * dimensions)
