@@ -1,0 +1,45 @@
+cvkit.pose\_estimation package
+==============================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   cvkit.pose_estimation.data_readers
+
+Submodules
+----------
+
+cvkit.pose\_estimation.config module
+------------------------------------
+
+.. automodule:: cvkit.pose_estimation.config
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cvkit.pose\_estimation.skeleton module
+--------------------------------------
+
+.. automodule:: cvkit.pose_estimation.skeleton
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cvkit.pose\_estimation.utils module
+-----------------------------------
+
+.. automodule:: cvkit.pose_estimation.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: cvkit.pose_estimation
+   :members:
+   :undoc-members:
+   :show-inheritance:
