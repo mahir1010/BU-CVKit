@@ -11,24 +11,24 @@ class Part(np.ndarray):
         """
         Represents a body part of the tracked subject.
         :param arr: Array of N values defining the position in N-dimensional space
-        :type arr: list,:class:'numpy.ndarray'
+        :param_type arr: list,:class:'numpy.ndarray'
         :param name: Name of the body part
-        :type name: string
+        :param_type name: string
         :param likelihood: A value indicating confidence in the accuracy of the position defined by arr
-        :type likelihood: float
+        :param_type likelihood: float
         """
         obj = np.asarray(arr).view(cls)
-        assert obj.ndim==1
+        assert obj.ndim == 1
         obj.name = name
         obj.likelihood = likelihood
         return obj
 
     def distance(self, obj):
-        assert len(obj)==len(self)
+        assert len(obj) == len(self)
         """
         Computes distance between two Parts.
         :param obj: N-dimensional vector
-        :type obj: :class:'cvkit.pose_estimation.Part',:class:'numpy.ndarray'
+        :param_type obj: :class:'cvkit.pose_estimation.Part',:class:'numpy.ndarray'
         :return: Distance between the part and the target vector
         :rtype: float
         """
@@ -46,7 +46,7 @@ class Part(np.ndarray):
         """
         Checks if the likelihood of the Part is lesser than a certain value
         :param other: A number for comparison
-        :type other: float
+        :param_type other: float
         :return: Whether the likelihood is lesser than the value.
         :rtype: bool
         """
@@ -56,7 +56,7 @@ class Part(np.ndarray):
         """
         Checks if the likelihood of the Part is greater than a certain value
         :param other: A number for comparison
-        :type other: float
+        :param_type other: float
         :return: Whether the likelihood is greater than the value.
         :rtype: bool
         """
@@ -66,7 +66,7 @@ class Part(np.ndarray):
         """
         Checks if the likelihood of the Part is greater than or equal to a certain value
         :param other: A number for comparison
-        :type other: float
+        :param_type other: float
         :return: Whether the likelihood is greater than or equal to the value.
         :rtype: bool
         """
@@ -76,7 +76,7 @@ class Part(np.ndarray):
         """
         Checks if the likelihood of the Part is lesser than or equal to a certain value
         :param other: A number for comparison
-        :type other: float
+        :param_type other: float
         :return: Whether the likelihood is lesser than or equal to the value.
         :rtype: bool
         """
@@ -86,7 +86,7 @@ class Part(np.ndarray):
         """
         Adds an N-dimensional vector or a scalar and creates a new Part Object
         :param other: N-dimensional vector
-        :type other: :class:`numpy.ndarray', list
+        :param_type other: :class:`numpy.ndarray', list
         :return: A new Part created from resulting vector.
         :rtype: :class:`cvkit.pose_estimation.Part'
         """
@@ -96,7 +96,7 @@ class Part(np.ndarray):
         """
         Subtracts an N-dimensional vector or a scalar and creates a new Part Object
         :param other: N-dimensional vector
-        :type other: :class:`numpy.ndarray', list
+        :param_type other: :class:`numpy.ndarray', list
         :return: A new Part created from resulting vector.
         :rtype: :class:`cvkit.pose_estimation.Part'
         """
@@ -106,7 +106,7 @@ class Part(np.ndarray):
         """
         Multiplies an N-dimensional vector or a scalar and creates a new Part Object
         :param other: N-dimensional vector
-        :type other: :class:`numpy.ndarray', list, float
+        :param_type other: :class:`numpy.ndarray', list, float
         :return: A new Part created from resulting vector.
         :rtype: :class:`cvkit.pose_estimation.Part'
         """
@@ -116,7 +116,7 @@ class Part(np.ndarray):
         """
         Adds an N-dimensional vector or a scalar and creates a new Part Object
         :param other: N-dimensional vector
-        :type other: :class:`numpy.ndarray', list, float
+        :param_type other: :class:`numpy.ndarray', list, float
         :return: A new Part created from resulting vector.
         :rtype: :class:`cvkit.pose_estimation.Part'
         """

@@ -94,8 +94,8 @@ class DeeplabcutDataStore(DataStoreInterface):
         for index, row in self.data.loc[:, (self.scorer, part)].iterrows():
             yield index, self.build_part(row, part)
 
-    def build_part(self, arr, name):
-        return Part([arr['x'], arr['y']], name, arr['likelihood'])
+    def build_part(self, row, name):
+        return Part([row['x'], row['y']], name, row['likelihood'])
 
     def get_part_slice(self, slice_indices: list, name: str) -> np.ndarray:
         return self.data.loc[slice_indices[0]:slice_indices[1] - 1, (self.scorer, name)].apply(

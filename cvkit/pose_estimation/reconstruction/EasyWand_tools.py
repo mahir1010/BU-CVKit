@@ -8,15 +8,15 @@ from scipy.spatial.transform import Rotation
 
 from cvkit.pose_estimation import Part
 from cvkit.pose_estimation.config import PoseEstimationConfig
-from cvkit.pose_estimation.post_processors.util import ClusterAnalysis
+from cvkit.pose_estimation.processors.util import ClusterAnalysis
 from cvkit.pose_estimation.reconstruction.DLT import DLTrecon
 from cvkit.pose_estimation.utils import rotate, magnitude
 
 
 def generate_EasyWand_data(config: PoseEstimationConfig, csv_maps, common_indices, static_points_map):
-    file = open(join(config.output_folder,
-                     f'{config.project_name}_calibration_camera_order.txt'), 'w')
     os.makedirs(join(config.output_folder, 'calibration'), exist_ok=True)
+    file = open(join(config.output_folder, 'calibration',
+                     f'{config.project_name}_calibration_camera_order.txt'), 'w')
     camera_profile = open(
         join(config.output_folder, 'calibration', f'{config.project_name}_calibration_camera_profiles.txt'),
         'w')
@@ -61,9 +61,12 @@ def update_alignment_matrices(config: PoseEstimationConfig, source_views: list):
         y_max = Part((DLTrecon(3, len(y_max_2D), dlt_coefficients, y_max_2D)), "y_max", 1)
         rotation_matrix = Rotation.align_vectors([x_max - origin, y_max - origin], [[1, 0, 0], [0, 1, 0]])[
             0].as_matrix()
-        origin = Part(rotate(DLTrecon(3, len(origin_2D), dlt_coefficients, origin_2D), rotation_matrix), "origin", 1)
-        x_max = Part(rotate(DLTrecon(3, len(x_max_2D), dlt_coefficients, x_max_2D), rotation_matrix), "x_max", 1)
-        y_max = Part(rotate(DLTrecon(3, len(y_max_2D), dlt_coefficients, y_max_2D), rotation_matrix), "y_max", 1)
+        origin = Part(rotate(DLTrecon(3, len(origin_2D), dlt_coefficients, origin_2D), rotation_matrix,
+                             multiplier=config.axis_rotation_3D), "origin", 1)
+        x_max = Part(rotate(DLTrecon(3, len(x_max_2D), dlt_coefficients, x_max_2D), rotation_matrix,
+                            multiplier=config.axis_rotation_3D), "x_max", 1)
+        y_max = Part(rotate(DLTrecon(3, len(y_max_2D), dlt_coefficients, y_max_2D), rotation_matrix,
+                            multiplier=config.axis_rotation_3D), "y_max", 1)
         config.computed_scale = (config.scale / magnitude(x_max - origin) + config.scale / magnitude(
             y_max - origin)) / 2
         trans_mat = -origin
@@ -95,7 +98,7 @@ def pick_calibration_candidates(config: PoseEstimationConfig, data_stores: list,
             position = data_stores[0].get_part(index, part)
             x_bin, y_bin = int(position[0] / bin_size), int(position[1] / bin_size)
             if 0 <= x_bin < num_bins[0] and 0 <= y_bin < num_bins[1] and (
-                    spatial_bins[x_bin][y_bin] < 3 and index - frame_number[x_bin][y_bin] > 10):
+                    spatial_bins[x_bin][y_bin] == 0 and index - frame_number[x_bin][y_bin] > config.framerate * .1):
                 spatial_bins[x_bin][y_bin] += 1
                 frame_number[x_bin][y_bin] = index
                 candidates.append(index)

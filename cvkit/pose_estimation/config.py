@@ -34,7 +34,11 @@ class AnnotationConfig:
         self.annotation_file = data_dictionary['annotation_file']
         self.annotation_file_flavor = data_dictionary['annotation_file_flavor']
         self.video_file = data_dictionary['video_file']
-        assert os.path.isfile(self.video_file)
+        try:
+            assert os.path.isfile(self.video_file)
+        except:
+            print(self.video_file, "not found!")
+            exit()
         self.video_reader = data_dictionary['video_reader']
 
     def export_dict(self):
@@ -58,6 +62,11 @@ class PoseEstimationConfig:
         self.output_folder = self.data_dictionary['output_folder']
         assert os.path.exists(self.output_folder)
         self.threshold = float(self.data_dictionary['Reconstruction'].get('threshold', DEFAULT_THRESHOLD))
+        self.axis_rotation_3D = np.array(
+            self.data_dictionary['Reconstruction'].get('axis_rotation_3D', np.array([1, 1, 1])))
+        if np.any(np.abs(self.axis_rotation_3D) != 1):
+            print(f"Resetting {self.axis_rotation_3D} to [1,1,1]")
+            self.axis_rotation_3D = np.array([1, 1, 1])
         self.body_parts = self.data_dictionary['body_parts']
         self.num_parts = len(self.body_parts)
         self.skeleton = self.data_dictionary['skeleton']
@@ -97,7 +106,8 @@ class PoseEstimationConfig:
                     'rotation_matrix': self.rotation_matrix.tolist(),
                     'translation_matrix': self.translation_matrix.tolist(),
                     'reconstruction_algorithm': self.reconstruction_algorithm,
-                    'computed_scale': float(self.computed_scale)
+                    'computed_scale': float(self.computed_scale),
+                    'axis_rotation_3D': self.axis_rotation_3D.tolist()
                 }
                 }
 

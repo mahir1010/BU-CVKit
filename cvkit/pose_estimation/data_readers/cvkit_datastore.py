@@ -22,7 +22,7 @@ class CVKitDataStore3D(DataStoreInterface):
         if force_remove or index in self.data.index:
             self.data.loc[index, name] = pd.NA
 
-    def set_behaviour(self, index, behaviour: str) -> None:
+    def set_behaviour(self, index, behaviour: list) -> None:
         self.data.loc[index, 'behaviour'] = self.BEHAVIOUR_SEP.join(behaviour)
 
     def get_behaviour(self, index) -> list:
@@ -63,8 +63,8 @@ class CVKitDataStore3D(DataStoreInterface):
         return Skeleton(self.body_parts, part_map=part_map, likelihood_map=likelihood_map,
                         behaviour=behaviour)
 
-    def build_part(self, arr, name):
-        pt = convert_to_numpy(arr)
+    def build_part(self, row, name):
+        pt = convert_to_numpy(row)
         return Part(pt, name, float(not all(pt == self.MAGIC_NUMBER)))
 
     def __init__(self, body_parts, path):

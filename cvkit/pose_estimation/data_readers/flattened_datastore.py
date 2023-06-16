@@ -48,7 +48,7 @@ class FlattenedDataStore(DataStoreInterface):
         if force_remove or index in self.data.index:
             self.data.loc[index, [f"{name}_{i}" for i in range(1, self.DIMENSIONS + 1)]] = pd.NA
 
-    def set_behaviour(self, index, behaviour: str) -> None:
+    def set_behaviour(self, index, behaviour: list) -> None:
         self.data.loc[index, 'behaviour'] = self.BEHAVIOUR_SEP.join(behaviour)
 
     def get_behaviour(self, index) -> list:
@@ -95,8 +95,8 @@ class FlattenedDataStore(DataStoreInterface):
                         behaviour=behaviour,
                         dims=self.DIMENSIONS)
 
-    def build_part(self, arr, name):
-        pt = arr.to_numpy()
+    def build_part(self, row, name):
+        pt = row.to_numpy()
         if any(np.isnan(pt)):
             pt = np.array([self.MAGIC_NUMBER] * self.DIMENSIONS)
         return Part(pt, name, float(not all(pt == self.MAGIC_NUMBER)))

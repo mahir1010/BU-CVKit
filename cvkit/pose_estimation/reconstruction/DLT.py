@@ -72,7 +72,7 @@ def DLTrecon(nd, nc, Ls, uvs):
     Inputs:
      nd is the number of dimensions of the object space: 3 for 3D DLT and 2 for 2D DLT.
      nc is the number of views (views) used.
-     Ls (array type) are the camera calibration parameters of each camera 
+     Ls (array param_type) are the camera calibration parameters of each camera
       (is the output of DLTcalib function). The Ls parameters are given as columns
       and the Ls for different views as rows.
      uvs are the coordinates of the point in the image 2D space of each camera.
@@ -130,7 +130,7 @@ def DLTdecon(Ls, xyz, nd=3, nc=2):
     Inputs:
      nd is the number of dimensions of the object space: 3 for 3D DLT and 2 for 2D DLT.
      nc is the number of views (views) used.
-     Ls (array type) are the camera calibration parameters of each camera 
+     Ls (array param_type) are the camera calibration parameters of each camera
       (is the output of DLTcalib function). The Ls parameters are given as columns
       and the Ls for different views as rows.
      xyz is point coordinates in object space, accept multiple points
