@@ -1,10 +1,27 @@
 import os
+import tempfile
 from glob import glob
 
 import cv2
 import numpy as np
 
+from cvkit.video_readers.decord_reader import DecordReader
 from cvkit.video_readers.video_reader_interface import BaseVideoReaderInterface
+
+
+def generate_image_sequence_reader(video_path, fps, frame_numbers, output_path=None):
+    if output_path == None:
+        directory = tempfile.TemporaryDirectory()
+        directory_path = tempfile.name
+    else:
+        directory = directory_path = output_path
+        os.makedirs(directory_path, exist_ok=True)
+    reader = DecordReader(video_path, fps, 1)
+    for index, frame_number in enumerate(frame_numbers):
+        if not os.path.exists(os.path.join(directory_path, f'{frame_number}.png')):
+            cv2.imwrite(os.path.join(directory_path, f'{frame_number}.png'),
+                        cv2.cvtColor(reader.random_access_image(frame_number), cv2.COLOR_RGB2BGR))
+    return ImageSequenceReader(directory, fps)
 
 
 class ImageSequenceReader(BaseVideoReaderInterface):
@@ -23,16 +40,20 @@ class ImageSequenceReader(BaseVideoReaderInterface):
         return self.current_frame
 
     def release(self) -> None:
-        pass
+        if type(self.directory) == tempfile.TemporaryDirectory:
+            self.directory.cleanup()
 
     def pause(self) -> None:
         pass
 
-    def __init__(self, name, video_path, fps, file_formats=['[jJ][pP][gG]', '[pP][nN][gG]', '[bB][mM][pP]']):
-        super(ImageSequenceReader, self).__init__(name, video_path, fps)
+    def __init__(self, video_path, fps, file_formats=['[jJ][pP][gG]', '[pP][nN][gG]', '[bB][mM][pP]']):
+        if type(video_path) == tempfile.TemporaryDirectory:
+            super(ImageSequenceReader, self).__init__(video_path.name, fps)
+        else:
+            super(ImageSequenceReader, self).__init__(video_path, fps)
+        self.directory = video_path
         self.images = []
         for file_format in file_formats:
-            self.images.extend(glob(os.path.join(video_path, '*.{}'.format(file_format))))
-        self.images.sort()
+            self.images.extend(glob(os.path.join(self.video_path, '*.{}'.format(file_format))))
         self.total_frames = len(self.images)
         self.frame_number = 0

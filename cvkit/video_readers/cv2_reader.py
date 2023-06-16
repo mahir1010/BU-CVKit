@@ -1,3 +1,4 @@
+import sys
 import time
 from queue import Queue, Empty
 from threading import Thread
@@ -16,6 +17,7 @@ class CV2VideoReader(BaseVideoReaderInterface):
             stream.set(cv2.CAP_PROP_POS_FRAMES, position)
             ret, frame = stream.read()
             stream.release()
+            print(sys.getsizeof(frame))
             if ret:
                 return cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
@@ -30,9 +32,6 @@ class CV2VideoReader(BaseVideoReaderInterface):
         self.total_frames = int(self.stream.get(cv2.CAP_PROP_FRAME_COUNT))
 
     def start(self):
-        if self.thread is None:
-            with self.buffer.mutex:
-                self.buffer.queue.clear()
         self.stream.set(cv2.CAP_PROP_POS_FRAMES, self.current_index + 1)
         self.thread = Thread(target=self.fill_buffer)
         self.thread.daemon = True
@@ -45,8 +44,9 @@ class CV2VideoReader(BaseVideoReaderInterface):
                 break
             if not self.buffer.full():
                 ret, frame = self.stream.read()
-                frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                self.buffer.put(frame)
+                if ret:
+                    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                    self.buffer.put(frame)
             else:
                 time.sleep(0.01)
 
@@ -54,6 +54,8 @@ class CV2VideoReader(BaseVideoReaderInterface):
         if self.thread:
             self.state = -1
             self.thread.join()
+            with self.buffer.mutex:
+                self.buffer.queue.clear()
         self.thread = None
 
     def pause(self) -> None:
