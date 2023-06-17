@@ -146,6 +146,7 @@ class Skeleton:
         self.body_parts_map = {}
         candidates = body_parts.copy()
         self.behaviour = behaviour
+        self.dims = dims
         for name in part_map.keys():
             candidates.remove(name)
             self.body_parts_map[name] = Part(part_map[name], name, likelihood_map[name])
@@ -238,8 +239,8 @@ class Skeleton:
     def normalize(self, max_lim: np.ndarray, min_lim: np.ndarray):
         max_lim = np.array(max_lim)
         min_lim = np.array(min_lim)
-        if max_lim.shape != min_lim.shape != (3,):
-            raise Exception("Maximum limit and Minimum limit should have (3,) shape")
+        if max_lim.shape != min_lim.shape != (self.dims,):
+            raise Exception(f"Maximum limit and Minimum limit should have ({self.dims},) shape")
         normalize_fn = lambda x: (x - min_lim) / (max_lim - min_lim)
         part_map = {}
         likelihood_map = {}
