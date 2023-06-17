@@ -1,4 +1,4 @@
-# BU-CVKit : Extendable Computer Vision Framework
+# BU-CVKit : Extendable Computer Vision Framework [<img src=https://upload.wikimedia.org/wikipedia/commons/9/96/Wlm-icon-note-red.svg width=30>](https://bu-cvkit.readthedocs.io)
 
 ## Abstract
 
