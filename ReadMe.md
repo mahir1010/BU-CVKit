@@ -13,12 +13,12 @@ Furthermore, we provide [MuSeqPose Kit](https://mahir1010.github.io/MuSeqPose/),
 
 ### Data I/O Modules
 
-The framework provides an abstract `DataStoreInterface` class that can be extended to provide intuitive access to n-dimensional pose estimation data.
-Each instance of a person’s or animal’s pose is converted into a `Skeleton` object which in turn contains multiple `Part` Objects.
+The framework provides an abstract [`DataStoreInterface`](https://bu-cvkit.readthedocs.io/en/latest/cvkit.pose_estimation.data_readers.html#cvkit.pose_estimation.data_readers.datastore_interface.DataStoreInterface) class that can be extended to provide intuitive access to n-dimensional pose estimation data.
+Each instance of a person’s or animal’s pose is converted into a [`Skeleton`](https://bu-cvkit.readthedocs.io/en/latest/cvkit.pose_estimation.html#cvkit.pose_estimation.skeleton.Skeleton) object which in turn contains multiple [`Part`](https://bu-cvkit.readthedocs.io/en/latest/cvkit.pose_estimation.html#cvkit.pose_estimation.skeleton.Part) Objects.
 Each Part object extends a Numpy array and therefore supports efficient vectorized operations.
 In addition, the Skeleton object supports further Pose-Estimation-specific features such as behavior annotations and unified arithmetic and geometric operations.
 
-<p align="center"><img src="docs/images/data_reader.png" style="width: 50%px;max-width: 500px"></p>
+<p align="center"><img src="docs/images/data_reader.png" style="width: 70%;max-width: 500px"></p>
 
 #### Part Class
 It represents a single marker or a body part of the animal. Internally it is represented by n-dimensional `numpy` array. Therefore, it supports wide range of computational methods provided by the numpy library.
@@ -59,7 +59,7 @@ is_mouse_2_valid = mouse_2_snout > 0.7
 ```
 #### Skeleton Class
 
-It represents the complete skeleton of the tracked subject. For an experiment with $n$ keypoints, a `Skeleton` object will contain $n$ instances of `Part` objects.
+It represents the complete skeleton of the tracked subject. For an experiment with $n$ keypoints, a [`Skeleton`](https://bu-cvkit.readthedocs.io/en/latest/cvkit.pose_estimation.html#cvkit.pose_estimation.skeleton.Skeleton) object will contain $n$ instances of [`Part`](https://bu-cvkit.readthedocs.io/en/latest/cvkit.pose_estimation.html#cvkit.pose_estimation.skeleton.Part) objects.
 The Skeleton class provides encapsulation to all the body parts of the same animal. You can uniformly process all parts at the same time. It also contains behaviour information for current skeleton orientation.
 
 Example:
@@ -110,10 +110,10 @@ skeleton_1 = skeleton_1.normalize(min_coordinates,max_coordinates)
 ```
 
 
-As of now, we have released 3 implementation of the `DataStoreInterface`.
-1. `CVKitDataStore3D` : Our n-dimensional data interface that stores list of coordinates per cell in a csv file. 
-2. `DeeplabcutDataStore` : Following the data structure of [DeepLabCut](https://github.com/DeepLabCut/DeepLabCut),  a feature-rich pose-estimation toolkit widely used in the research community.
-3. `FlattenedDataStore` : n-dimensional data interface that flattens all dimensions to separate csv cells. 
+As of now, we have released 3 implementation of the [`DataStoreInterface`](https://bu-cvkit.readthedocs.io/en/latest/cvkit.pose_estimation.data_readers.html#cvkit.pose_estimation.data_readers.datastore_interface.DataStoreInterface).
+1. [`CVKitDataStore3D`](https://bu-cvkit.readthedocs.io/en/latest/cvkit.pose_estimation.data_readers.html#cvkit.pose_estimation.data_readers.cvkit_datastore.CVKitDataStore3D) : Our n-dimensional data interface that stores list of coordinates per cell in a csv file. 
+2. [`DeeplabcutDataStore`](https://bu-cvkit.readthedocs.io/en/latest/cvkit.pose_estimation.data_readers.html#cvkit.pose_estimation.data_readers.deeplabcut_datastore.DeeplabcutDataStore) : Following the data structure of [DeepLabCut](https://github.com/DeepLabCut/DeepLabCut),  a feature-rich pose-estimation toolkit widely used in the research community.
+3. [`FlattenedDataStore`](https://bu-cvkit.readthedocs.io/en/latest/cvkit.pose_estimation.data_readers.html#cvkit.pose_estimation.data_readers.flattened_datastore.FlattenedDataStore) : n-dimensional data interface that flattens all dimensions to separate csv cells. 
 
 Example:
 ```python
@@ -185,12 +185,45 @@ print(reader.get_current_index())# Index 100
 
 ### Processor Modules
 
+
+
 The pose estimation package provides an abstract `Processor` class that can be extended to implement plugins for state-of-the-art computer vision methods.
 The instances of these Processors are chainable and, therefore, can be used to create a pipeline that takes raw data and generate the desired output.
+<p align="center"><img src="docs/images/plugin_chain.png" style="width: 70%;max-width: 500px"></p>
+
 We classify `Processor` objects into three categories:
 1. Generative : Processor that performs some computational task to generate data files.
 2. Filters : Processor that takes `DataStoreInterface` as input and performs any kind of data filtering computation.
 3. Utility : Processor that provides utility functions to facilitate chaining operations.
 
 
-<p align="center"><img src="docs/images/plugin_chain.png" style="width: 50%px;max-width: 500px"></p>
+Example:
+<p align="center"><img src="docs/images/filter_pipeline.png" style="width: 70%;max-width: 500px"></p>
+
+```python
+from cvkit.pose_estimation.processors.util import LoadFile,SaveFile,ClusterAnalysis
+from cvkit.pose_estimation.processors.filter import LinearInterpolationFilter,KalmanFilter
+from cvkit.pose_estimation.config import PoseEstimationConfig
+
+#Load data store
+body_parts = ['snout','leftEar','rightEaer','headBase','sp1','mid','sp2','tailBase','tailMid','tailTip']
+path_to_file = '<path_to_file>'
+threshold = 0.6 # Cutoff for considering data as invalid
+config = PoseEstimationConfig('<path_to_yaml>') #Contains Experiment Metadata (body parts, video/data paths, etc..) 
+
+processors = [
+    LoadFile(config,{'path':path_to_file,'type':'CVKit3D'}), #Loads given file as CVKit3D data
+    ClusterAnalysis(threshold), #Analyzes file to compute clusters of accurate and inaccurate data. Used by interpolation to skip accurate data points.
+    LinearInterpolationFilter('snout',threshold,10), # (target_column,threhsold,max_window_size)
+    KalmanFilter('snout',60), # (target_column,framerate)
+    SaveFile('<output_file_path>') #Saves File at output_file_path
+]
+
+data_store = None
+for processor in processors:
+    processor.process(data_store)
+    data_store = processor.get_output() #Overwrite data_store and forward to next processor.
+```
+
+
+
