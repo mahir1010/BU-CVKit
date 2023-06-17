@@ -1,5 +1,16 @@
 # BU-CVKit : Extendable Computer Vision Framework
 
+## Installation
+```shell
+conda create -n cvkit python=3.10 cudatoolkit
+conda activate cvkit
+
+#Follow from Steup 2: Tensorflow website https://www.tensorflow.org/install/pip#linux (linux configuration)
+#Ignore version numbers
+ 
+pip install bu-cvkit
+```
+
 ## Abstract
 
 A major bottleneck of interdisciplinary computer vision research is the lack of a framework that eases the reuse and abstraction of state-of-the-art CV methods.
