@@ -1,4 +1,4 @@
-# BU-CVKit : Extendable Computer Vision Framework [<img src=https://upload.wikimedia.org/wikipedia/commons/9/96/Wlm-icon-note-red.svg width=30>](https://bu-cvkit.readthedocs.io)
+# BU-CVKit : Extendable Computer Vision Framework
 
 ## Abstract
 
@@ -9,6 +9,7 @@ These pipelines can be interpreted as a black box that performs semantically mea
 The community can create plugins of their work for the framework, hence improving the re-usability, accessibility, and exposure of their work with minimal overhead.
 Furthermore, we provide [MuSeqPose Kit](https://mahir1010.github.io/MuSeqPose/), a user interface for the pose estimation package of BU-CVKit, which automatically scans for installed plugins and programmatically generates an interface.
 
+
 ## Pose Estimation Features
 
 ### Data I/O Modules
@@ -18,7 +19,7 @@ Each instance of a person’s or animal’s pose is converted into a [`Skeleton`
 Each Part object extends a Numpy array and therefore supports efficient vectorized operations.
 In addition, the Skeleton object supports further Pose-Estimation-specific features such as behavior annotations and unified arithmetic and geometric operations.
 
-<p align="center"><img src="docs/images/data_reader.png" style="width: 50%;max-width: 500px"></p>
+<p align="center"><img src="docs/images/data_reader.png" style="width: 60%;max-width: 500px"></p>
 
 #### Part Class
 It represents a single marker or a body part of the animal. Internally it is represented by n-dimensional `numpy` array. Therefore, it supports wide range of computational methods provided by the numpy library.
@@ -149,7 +150,7 @@ condition = skeleton['snout'].likelihood < skeleton['headBase'].likelihood
 
 ### Efficient Video Readers
 
-<img align="right" src="docs/images/perf_comp.png" style="width: 50%;max-width: 500px">
+<img align="right" src="docs/images/perf_comp.png" style="width: 60%;max-width: 500px">
 
 BU-CVKit contains an abstract buffered VideoReader class that can be extended to provide sequential or random access to video frames using different backbone libraries.
 With our package, we provide buffered implementation of [OpenCV](https://github.com/opencv/opencv-python), [Deffcode](https://github.com/abhiTronix/deffcode),
@@ -189,7 +190,7 @@ print(reader.get_current_index())# Index 100
 
 The pose estimation package provides an abstract `Processor` class that can be extended to implement plugins for state-of-the-art computer vision methods.
 The instances of these Processors are chainable and, therefore, can be used to create a pipeline that takes raw data and generate the desired output.
-<p align="center"><img src="docs/images/plugin_chain.png" style="width: 50%;max-width: 500px"></p>
+<p align="center"><img src="docs/images/plugin_chain.png" style="width: 60%;max-width: 500px"></p>
 
 We classify `Processor` objects into three categories:
 1. Generative : Processor that performs some computational task to generate data files.
@@ -198,7 +199,7 @@ We classify `Processor` objects into three categories:
 
 
 Example:
-<p align="center"><img src="docs/images/filter_pipeline.png" style="width: 50%;max-width: 500px"></p>
+<p align="center"><img src="docs/images/filter_pipeline.png" style="width: 60%;max-width: 500px"></p>
 
 ```python
 from cvkit.pose_estimation.processors.util import LoadFile,SaveFile,ClusterAnalysis
@@ -227,3 +228,4 @@ for processor in processors:
 
 
 
+### [Documentation](https://bu-cvkit.readthedocs.io)
