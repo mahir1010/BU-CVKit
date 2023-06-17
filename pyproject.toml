@@ -3,12 +3,12 @@ requires = ["setuptools>=67.0"]
 build-backend = "setuptools.build_meta"
 [project]
 name = "bu_cvkit"
-version = "0.0.3"
+version = "0.0.3.1"
 authors = [
     { name = "Mahir Patel", email = "mahirp@bu.edu" },
 ]
 description = "A toolkit to accelerate computer vision research"
-requires-python = "==3.10"
+requires-python = ">=3.10,<=3.11"
 classifiers = [
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
     "Programming Language :: Python :: 3",
