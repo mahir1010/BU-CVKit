@@ -18,7 +18,7 @@ Each instance of a person’s or animal’s pose is converted into a [`Skeleton`
 Each Part object extends a Numpy array and therefore supports efficient vectorized operations.
 In addition, the Skeleton object supports further Pose-Estimation-specific features such as behavior annotations and unified arithmetic and geometric operations.
 
-<p align="center"><img src="docs/images/data_reader.png" style="width: 70%;max-width: 500px"></p>
+<p align="center"><img src="docs/images/data_reader.png" style="width: 50%;max-width: 500px"></p>
 
 #### Part Class
 It represents a single marker or a body part of the animal. Internally it is represented by n-dimensional `numpy` array. Therefore, it supports wide range of computational methods provided by the numpy library.
@@ -189,7 +189,7 @@ print(reader.get_current_index())# Index 100
 
 The pose estimation package provides an abstract `Processor` class that can be extended to implement plugins for state-of-the-art computer vision methods.
 The instances of these Processors are chainable and, therefore, can be used to create a pipeline that takes raw data and generate the desired output.
-<p align="center"><img src="docs/images/plugin_chain.png" style="width: 70%;max-width: 500px"></p>
+<p align="center"><img src="docs/images/plugin_chain.png" style="width: 50%;max-width: 500px"></p>
 
 We classify `Processor` objects into three categories:
 1. Generative : Processor that performs some computational task to generate data files.
@@ -198,7 +198,7 @@ We classify `Processor` objects into three categories:
 
 
 Example:
-<p align="center"><img src="docs/images/filter_pipeline.png" style="width: 70%;max-width: 500px"></p>
+<p align="center"><img src="docs/images/filter_pipeline.png" style="width: 50%;max-width: 500px"></p>
 
 ```python
 from cvkit.pose_estimation.processors.util import LoadFile,SaveFile,ClusterAnalysis
