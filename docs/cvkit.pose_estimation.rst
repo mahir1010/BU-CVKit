@@ -8,6 +8,7 @@ Subpackages
    :maxdepth: 4
 
    cvkit.pose_estimation.data_readers
+   cvkit.pose_estimation.processors
 
 Submodules
 ----------

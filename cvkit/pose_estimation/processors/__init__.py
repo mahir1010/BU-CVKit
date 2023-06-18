@@ -1,0 +1,1 @@
+from cvkit.pose_estimation.processors.processor_interface import Processor,ProcessorMetaData
