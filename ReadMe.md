@@ -131,7 +131,7 @@ Example:
 ```python
 from cvkit.pose_estimation.data_readers import CVKitDataStore3D
 
-body_parts = ['snout','leftEar','rightEaer','headBase','sp1','mid','sp2','tailBase','tailMid','tailTip']
+body_parts = ['snout','leftEar','rightEar','headBase','sp1','mid','sp2','tailBase','tailMid','tailTip']
 data_store = CVKitDataStore3D(body_parts,'<path_to_file>')
 # Random Access
 # Get Skeleton object from data_store for the 100th frame
@@ -218,7 +218,7 @@ from cvkit.pose_estimation.processors.filter import LinearInterpolationFilter,Ka
 from cvkit.pose_estimation.config import PoseEstimationConfig
 
 #Load data store
-body_parts = ['snout','leftEar','rightEaer','headBase','sp1','mid','sp2','tailBase','tailMid','tailTip']
+body_parts = ['snout','leftEar','rightEar','headBase','sp1','mid','sp2','tailBase','tailMid','tailTip']
 path_to_file = '<path_to_file>'
 threshold = 0.6 # Cutoff for considering data as invalid
 config = PoseEstimationConfig('<path_to_yaml>') #Contains Experiment Metadata (body parts, video/data paths, etc..) 
