@@ -10,6 +10,15 @@ from cvkit.video_readers.video_reader_interface import BaseVideoReaderInterface
 
 
 class CV2VideoReader(BaseVideoReaderInterface):
+    """ This implementation uses OpenCV as the underlying library to implement the BaseVideoReaderInterface
+
+    :param video_path: Path of the video.
+    :type video_path: str
+    :param fps: The FPS of the video.
+    :type fps: float
+    :param buffer_size: The size of the frame pre-fetch buffer.
+    :type buffer_size: int
+    """
 
     def random_access_image(self, position):
         if 0 <= position < self.total_frames:

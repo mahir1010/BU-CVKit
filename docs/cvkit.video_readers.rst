@@ -9,7 +9,6 @@ cvkit.video\_readers.cv2\_reader module
 
 .. automodule:: cvkit.video_readers.cv2_reader
    :members:
-   :undoc-members:
    :show-inheritance:
 
 cvkit.video\_readers.decord\_reader module
@@ -17,7 +16,6 @@ cvkit.video\_readers.decord\_reader module
 
 .. automodule:: cvkit.video_readers.decord_reader
    :members:
-   :undoc-members:
    :show-inheritance:
 
 cvkit.video\_readers.deffcode\_reader module
@@ -25,7 +23,6 @@ cvkit.video\_readers.deffcode\_reader module
 
 .. automodule:: cvkit.video_readers.deffcode_reader
    :members:
-   :undoc-members:
    :show-inheritance:
 
 cvkit.video\_readers.image\_sequence\_reader module
@@ -33,7 +30,6 @@ cvkit.video\_readers.image\_sequence\_reader module
 
 .. automodule:: cvkit.video_readers.image_sequence_reader
    :members:
-   :undoc-members:
    :show-inheritance:
 
 cvkit.video\_readers.video\_reader\_interface module
@@ -41,7 +37,6 @@ cvkit.video\_readers.video\_reader\_interface module
 
 .. automodule:: cvkit.video_readers.video_reader_interface
    :members:
-   :undoc-members:
    :show-inheritance:
 
 Module contents
@@ -49,5 +44,4 @@ Module contents
 
 .. automodule:: cvkit.video_readers
    :members:
-   :undoc-members:
    :show-inheritance:

@@ -9,6 +9,15 @@ from cvkit.pose_estimation.utils import convert_to_numpy
 
 
 class CVKitDataStore3D(DataStoreInterface):
+    """
+        Implements a datastore reader for BU-CVKit's n-dimensional data files. Expects a csv file where all dimensions are stored in a single cell.
+        The header should contain a single column per keypoint.
+
+    :param body_parts: list of column names
+    :param path: path to data file
+    :param dimension: data dimension
+    """
+
     FLAVOR = "CVKit3D"
     SEP = ';'
 
@@ -67,8 +76,8 @@ class CVKitDataStore3D(DataStoreInterface):
         pt = convert_to_numpy(row)
         return Part(pt, name, float(not all(pt == self.MAGIC_NUMBER)))
 
-    def __init__(self, body_parts, path):
-        super(CVKitDataStore3D, self).__init__(body_parts, path)
+    def __init__(self, body_parts, path,dimensions=3):
+        super(CVKitDataStore3D, self).__init__(body_parts, path,dimensions)
         self.path = path
         if path is not None and os.path.exists(path):
             self.data = pd.read_csv(path, sep=';')

@@ -8,18 +8,20 @@ from cvkit.pose_estimation.data_readers.datastore_interface import DataStoreInte
 
 
 class FlattenedDataStore(DataStoreInterface):
+    """
+        Implements a datastore reader for flattened csv files. Expects a csv file where all dimensions are flattened.
+        The header should contain 3 consecutive columns per keypoint.
+        Ex. Snout_1,Snout_2,Snout_3 for x,y, and z values
+
+    :param body_parts: list of column names
+    :param path: path to data file
+    :param dimension: data dimension
+    """
     FLAVOR = "flattened"
     DIMENSIONS = 3
 
     def __init__(self, body_parts, path, dimension=3):
-        """
-        Plugin to support flattened data file.Expects a csv file where all dimensions are flattened.
-        The header should contain 3 consecutive columns per keypoint.
-        Ex. Snout_1,Snout_2,Snout_3 for x,y, and z values
-        Args:
-            body_parts: list of column names
-            path: path to file
-        """
+
         super(FlattenedDataStore, self).__init__(body_parts, path, dimension=dimension)
         self.path = path
         if path is not None and os.path.exists(path):

@@ -11,6 +11,15 @@ from cvkit.video_readers.video_reader_interface import BaseVideoReaderInterface
 
 
 class DeffcodeVideoReader(BaseVideoReaderInterface):
+    """ This implementation uses Deffcode as the underlying library to implement the BaseVideoReaderInterface.
+
+    :param video_path: Path of the video.
+    :type video_path: str
+    :param fps: The FPS of the video.
+    :type fps: float
+    :param buffer_size: The size of the frame pre-fetch buffer.
+    :type buffer_size: int
+    """
     FLAVOR = "deffcode"
 
     def random_access_image(self, position):

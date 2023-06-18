@@ -9,7 +9,6 @@ cvkit.pose\_estimation.data\_readers.cvkit\_datastore module
 
 .. automodule:: cvkit.pose_estimation.data_readers.cvkit_datastore
    :members:
-   :undoc-members:
    :show-inheritance:
 
 cvkit.pose\_estimation.data\_readers.datastore\_interface module
@@ -17,7 +16,6 @@ cvkit.pose\_estimation.data\_readers.datastore\_interface module
 
 .. automodule:: cvkit.pose_estimation.data_readers.datastore_interface
    :members:
-   :undoc-members:
    :show-inheritance:
 
 cvkit.pose\_estimation.data\_readers.deeplabcut\_datastore module
@@ -25,7 +23,6 @@ cvkit.pose\_estimation.data\_readers.deeplabcut\_datastore module
 
 .. automodule:: cvkit.pose_estimation.data_readers.deeplabcut_datastore
    :members:
-   :undoc-members:
    :show-inheritance:
 
 cvkit.pose\_estimation.data\_readers.flattened\_datastore module
@@ -33,7 +30,6 @@ cvkit.pose\_estimation.data\_readers.flattened\_datastore module
 
 .. automodule:: cvkit.pose_estimation.data_readers.flattened_datastore
    :members:
-   :undoc-members:
    :show-inheritance:
 
 Module contents
@@ -41,5 +37,4 @@ Module contents
 
 .. automodule:: cvkit.pose_estimation.data_readers
    :members:
-   :undoc-members:
    :show-inheritance:

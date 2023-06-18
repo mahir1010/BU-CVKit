@@ -25,6 +25,15 @@ def generate_image_sequence_reader(video_path, fps, frame_numbers, output_path=N
 
 
 class ImageSequenceReader(BaseVideoReaderInterface):
+    """This implementation interprets a folder of images as a video stream. This can be useful when reading images from the datasets where the videos are stored as individual frames.
+
+    :param video_path: Path to the folder containing images
+    :type video_path: str
+    :param fps: FPS of the video stream
+    :type fps: float
+    :param file_formats: list of valid glob patterns for supported images.
+    :type file_formats: list[str]
+    """
     def random_access_image(self, position):
         if 0 <= position < self.total_frames:
             return cv2.cvtColor(cv2.imread(self.images[position]), cv2.COLOR_BGR2RGB)
@@ -47,6 +56,7 @@ class ImageSequenceReader(BaseVideoReaderInterface):
         pass
 
     def __init__(self, video_path, fps, file_formats=['[jJ][pP][gG]', '[pP][nN][gG]', '[bB][mM][pP]']):
+
         if type(video_path) == tempfile.TemporaryDirectory:
             super(ImageSequenceReader, self).__init__(video_path.name, fps)
         else:

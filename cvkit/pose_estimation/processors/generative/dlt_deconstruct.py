@@ -25,8 +25,9 @@ class DLTDeconstruction(Processor):
         self.file_prefix = file_prefix
         if file_prefix is not None:
             self.file_prefix = os.path.join(global_config.output_folder, file_prefix)
-
+        self._data_store = None
     def process(self, data_store):
+        self._data_store = data_store
         out_files = [DeeplabcutDataStore(data_store.body_parts,
                                          f'{data_store.base_file_path if self.file_prefix is None else self.file_prefix}_{target_view}.csv')
                      for
@@ -44,7 +45,7 @@ class DLTDeconstruction(Processor):
             for part in data_store.body_parts:
                 if skeleton[part] > 0:
                     raw_part_3d = rotate(np.array(skeleton[part]) - translation_matrix, rotation_matrix,
-                                         scale, True, multiplier=[1, 1, -1])
+                                         scale, True, axis_alignment_vector=[1, 1, -1])
                     parts_2d = np.round(DLTdecon(dlt_coefficients, raw_part_3d, 3, len(self.target_views)))[0,
                                :].reshape(len(self.target_views), 2)
                     for part_2d, data_store_2d in zip(parts_2d, out_files):
@@ -55,4 +56,4 @@ class DLTDeconstruction(Processor):
         self._data_ready = True
 
     def get_output(self):
-        return None
+        return self._data_store

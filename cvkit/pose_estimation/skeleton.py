@@ -6,17 +6,19 @@ from cvkit import MAGIC_NUMBER
 
 
 class Part(np.ndarray):
+    """
+    Represents a body part of the tracked subject.
 
+
+    :param arr: Array of N values defining the position in N-dimensional space
+    :param_type arr: list,:class:'numpy.ndarray'
+    :param name: Name of the body part
+    :param_type name: string
+    :param likelihood: A value indicating confidence in the accuracy of the position defined by arr
+    :param_type likelihood: float
+    """
     def __new__(cls, arr, name, likelihood):
-        """
-        Represents a body part of the tracked subject.
-        :param arr: Array of N values defining the position in N-dimensional space
-        :param_type arr: list,:class:'numpy.ndarray'
-        :param name: Name of the body part
-        :param_type name: string
-        :param likelihood: A value indicating confidence in the accuracy of the position defined by arr
-        :param_type likelihood: float
-        """
+
         obj = np.asarray(arr).view(cls)
         assert obj.ndim == 1
         obj.name = name
@@ -27,6 +29,7 @@ class Part(np.ndarray):
         assert len(obj) == len(self)
         """
         Computes distance between two Parts.
+        
         :param obj: N-dimensional vector
         :param_type obj: :class:'cvkit.pose_estimation.Part',:class:'numpy.ndarray'
         :return: Distance between the part and the target vector
@@ -37,6 +40,7 @@ class Part(np.ndarray):
     def magnitude(self):
         """
         Computes the magnitude of the Part.
+
         :return: Magnitude of the Part.
         :rtype: float
         """
@@ -44,7 +48,9 @@ class Part(np.ndarray):
 
     def __lt__(self, other: float):
         """
-        Checks if the likelihood of the Part is lesser than a certain value
+        Checks if the likelihood of the Part is lesser than a certain value.
+
+
         :param other: A number for comparison
         :param_type other: float
         :return: Whether the likelihood is lesser than the value.
@@ -54,7 +60,9 @@ class Part(np.ndarray):
 
     def __gt__(self, other: float):
         """
-        Checks if the likelihood of the Part is greater than a certain value
+        Checks if the likelihood of the Part is greater than a certain value.
+
+
         :param other: A number for comparison
         :param_type other: float
         :return: Whether the likelihood is greater than the value.
@@ -64,7 +72,9 @@ class Part(np.ndarray):
 
     def __ge__(self, other: float):
         """
-        Checks if the likelihood of the Part is greater than or equal to a certain value
+        Checks if the likelihood of the Part is greater than or equal to a certain value.
+
+
         :param other: A number for comparison
         :param_type other: float
         :return: Whether the likelihood is greater than or equal to the value.
@@ -74,7 +84,9 @@ class Part(np.ndarray):
 
     def __le__(self, other: float):
         """
-        Checks if the likelihood of the Part is lesser than or equal to a certain value
+        Checks if the likelihood of the Part is lesser than or equal to a certain value.
+
+
         :param other: A number for comparison
         :param_type other: float
         :return: Whether the likelihood is lesser than or equal to the value.
@@ -84,7 +96,9 @@ class Part(np.ndarray):
 
     def __add__(self, other):
         """
-        Adds an N-dimensional vector or a scalar and creates a new Part Object
+        Adds an N-dimensional vector or a scalar and creates a new Part Object.
+
+
         :param other: N-dimensional vector
         :param_type other: :class:`numpy.ndarray', list
         :return: A new Part created from resulting vector.
@@ -94,7 +108,9 @@ class Part(np.ndarray):
 
     def __sub__(self, other):
         """
-        Subtracts an N-dimensional vector or a scalar and creates a new Part Object
+        Subtracts an N-dimensional vector or a scalar and creates a new Part Object.
+
+
         :param other: N-dimensional vector
         :param_type other: :class:`numpy.ndarray', list
         :return: A new Part created from resulting vector.
@@ -104,7 +120,9 @@ class Part(np.ndarray):
 
     def __mul__(self, other):
         """
-        Multiplies an N-dimensional vector or a scalar and creates a new Part Object
+        Multiplies an N-dimensional vector or a scalar and creates a new Part Object.
+
+
         :param other: N-dimensional vector
         :param_type other: :class:`numpy.ndarray', list, float
         :return: A new Part created from resulting vector.
@@ -114,7 +132,9 @@ class Part(np.ndarray):
 
     def __radd__(self, other):
         """
-        Adds an N-dimensional vector or a scalar and creates a new Part Object
+        Adds an N-dimensional vector or a scalar and creates a new Part Object.
+
+
         :param other: N-dimensional vector
         :param_type other: :class:`numpy.ndarray', list, float
         :return: A new Part created from resulting vector.
@@ -132,15 +152,24 @@ class Part(np.ndarray):
 
 
 class Skeleton:
+    """ This class represents the skeleton of the tracked subject.
+
+    :param body_parts: list of body parts
+    :type body_parts: list[str]
+    :param part_map: A dictionary where the key is body part and value is its corresponding n-dimensional data.
+    :type part_map: dict
+    :param likelihood_map: A dictionary where the key is body part and value is its corresponding likelihood data.
+    :type likelihood_map: dict
+    :param behaviour: list of labels defining the behaviour of the subject at current frame.
+    :type behaviour: list['str']
+    :param dims: Dimension of underlying data.
+    :type dims: int
+    """
 
     def __init__(self, body_parts: list, part_map: dict = None, likelihood_map: dict = None, behaviour=[], dims=3):
         """
 
-        :param body_parts:
-        :param part_map:
-        :param likelihood_map:
-        :param behaviour:
-        :param dims:
+
         """
         self.body_parts = body_parts
         self.body_parts_map = {}
@@ -236,7 +265,16 @@ class Skeleton:
     def __len__(self):
         return len(self.body_parts)
 
-    def normalize(self, max_lim: np.ndarray, min_lim: np.ndarray):
+    def normalize(self, max_lim, min_lim):
+        """ Normalizes the skeleton so that the values range from 0.0 to 1.0
+
+        :param max_lim: The maximum limit of the coordinate system. n-dimensional list of coordinates.
+        :type max_lim: list[float]
+        :param min_lim: The minimum limit of the coordinate system. n-dimensional list of coordinates.
+        :type min_lim: list[float]
+        :return: Normalized Skeleton Object
+        :rtype: Skeleton
+        """
         max_lim = np.array(max_lim)
         min_lim = np.array(min_lim)
         if max_lim.shape != min_lim.shape != (self.dims,):

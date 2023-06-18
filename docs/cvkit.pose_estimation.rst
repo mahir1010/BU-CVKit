@@ -17,7 +17,6 @@ cvkit.pose\_estimation.config module
 
 .. automodule:: cvkit.pose_estimation.config
    :members:
-   :undoc-members:
    :show-inheritance:
 
 cvkit.pose\_estimation.skeleton module
@@ -25,7 +24,6 @@ cvkit.pose\_estimation.skeleton module
 
 .. automodule:: cvkit.pose_estimation.skeleton
    :members:
-   :undoc-members:
    :show-inheritance:
 
 cvkit.pose\_estimation.utils module
@@ -33,7 +31,6 @@ cvkit.pose\_estimation.utils module
 
 .. automodule:: cvkit.pose_estimation.utils
    :members:
-   :undoc-members:
    :show-inheritance:
 
 Module contents
@@ -41,5 +38,4 @@ Module contents
 
 .. automodule:: cvkit.pose_estimation
    :members:
-   :undoc-members:
    :show-inheritance:

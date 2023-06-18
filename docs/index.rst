@@ -8,7 +8,7 @@ Welcome to BU-CVKit's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-  cvkit
+   cvkit
 
 
 

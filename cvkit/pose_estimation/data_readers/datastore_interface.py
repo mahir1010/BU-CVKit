@@ -10,6 +10,15 @@ from cvkit.pose_estimation import Skeleton, Part
 
 
 class DataStoreInterface(ABC):
+    """
+        Interface for data reader. This class can be implemented to integrate data files from other toolkits.
+
+    :param body_parts: list of column names
+    :param path: path to data file
+    :param dimension: data dimension
+    """
+
+
     #: Acts as an ID for the class. File with "CVKit3D" indicates that the file should be opened with :py:class:`CVKitDataStore3D`
     FLAVOR = "Abstract"
     #: Dimension of the data
@@ -22,13 +31,7 @@ class DataStoreInterface(ABC):
     MAGIC_NUMBER = MAGIC_NUMBER
 
     def __init__(self, body_parts, path, dimension=3):
-        """
-            Interface for data reader. This class can be implemented to integrate data files from other toolkits.
 
-        :param body_parts: list of column names
-        :param path: path to data file
-        :param dimension: data dimension
-        """
         self.body_parts = body_parts
         self.data = None
         self.path = path
@@ -52,7 +55,7 @@ class DataStoreInterface(ABC):
 
     def set_skeleton(self, index, skeleton: Skeleton, force_insert=False) -> None:
         """
-        Set pose data from :py:class:`Skeleton` object at given index.
+        Set pose data from :py:class`~cvkit.pose_estimation.skeleton.Skeleton` object at given index.
 
         :param index: The index at which the data will be inserted.
         :param skeleton: :py:class:`Skeleton` object containing the pose data.
@@ -152,14 +155,14 @@ class DataStoreInterface(ABC):
     def part_iterator(self, part):
         """
         Generates and iterator which yields index and corresponding :py:class:`Part` sequentially.
-
         Example Usage:
-
         .. highlight:: python
         .. code-block:: python
 
             for index, snout in data_store.part_iterator('snout'):
                 print(index,snout)
+
+
         :param part: Target body part.
         """
         for index, row in self.data[part].items():
@@ -281,23 +284,20 @@ class DataStoreInterface(ABC):
     def convert_to_list(index, skeleton, threshold=0.8):
         """
         Generates a list of parts for :py:class:`csv.writer` module. The structure of the list depends upon output data format.
-        The data not crossing the threshold will not be included.
-        Can be used to convert one data flavor to another. Refer convert_data_flavor
+        The data not crossing the threshold will not be included. Can be used to convert one data flavor to another.
+
 
         :param index: Target Index
         :param skeleton: Target skeleton
         :param threshold: Threshold for including data.
-        :return: List of pose data
-        :rtype:list
         """
         pass
 
     def get_header_rows(self):
-        """
-        Generates a list of header data for :py:class:`csv.writer` module. The structure of the list depends upon output data format.
+        """Generates a list of header data for :py:class:`csv.writer` module. The structure of the list depends upon output data format.
 
         :return: List of header data
-        :rtype:list
+        :rtype: list
         """
         return [self.body_parts]
 

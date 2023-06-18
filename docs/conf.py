@@ -31,6 +31,7 @@ release = '0.0.2'
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
+    'sphinx.ext.viewcode',
     'sphinx_search.extension'
 ]
 

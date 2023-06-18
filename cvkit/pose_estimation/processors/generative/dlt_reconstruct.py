@@ -14,7 +14,6 @@ class DLTReconstruction(Processor):
     META_DATA = {'global_config': ProcessorMetaData('Global Config', ProcessorMetaData.GLOBAL_CONFIG),
                  'source_views': ProcessorMetaData('Source Views', ProcessorMetaData.VIEWS),
                  'data_readers': ProcessorMetaData('DataReaders', ProcessorMetaData.FILE_MAP),
-                 'file_prefix': ProcessorMetaData('File Prefix', ProcessorMetaData.TEXT),
                  'threshold': ProcessorMetaData('Threshold', ProcessorMetaData.FLOAT, 0.6, 0.0, 1.0)}
     PROCESSOR_SUMMARY = "Performs 3D reconstruction from selected source views."
 
@@ -51,7 +50,7 @@ class DLTReconstruction(Processor):
                     subset = [element for i, element in enumerate(subset) if indices[i]]
                     recon_data[name] = rotate(DLTrecon(3, len(subset), dlt_subset, subset), rotation_matrix,
                                               scale,
-                                              multiplier=self.global_config.axis_rotation_3D) + translation_matrix
+                                              axis_alignment_vector=self.global_config.axis_rotation_3D) + translation_matrix
                     prob_data[name] = min(subset, key=lambda x: x.likelihood).likelihood
             skeleton_3D = Skeleton(self.global_config.body_parts, recon_data, prob_data)
             self._out_csv.set_skeleton(iterator, skeleton_3D)

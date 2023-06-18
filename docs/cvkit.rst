@@ -18,7 +18,6 @@ cvkit.utils module
 
 .. automodule:: cvkit.utils
    :members:
-   :undoc-members:
    :show-inheritance:
 
 Module contents
@@ -26,5 +25,4 @@ Module contents
 
 .. automodule:: cvkit
    :members:
-   :undoc-members:
    :show-inheritance:

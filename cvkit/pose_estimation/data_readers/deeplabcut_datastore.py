@@ -8,17 +8,19 @@ from cvkit.pose_estimation.data_readers.datastore_interface import DataStoreInte
 
 
 class DeeplabcutDataStore(DataStoreInterface):
+    """
+        Implements a datastore reader for DeepLabCut compatible data files.
+
+    :param body_parts: list of column names
+    :param path: path to data file
+    :param dimension: data dimension
+    """
+
     FLAVOR = "deeplabcut"
     DIMENSIONS = 2
 
-    def __init__(self, body_parts, path):
-        """
-        Plugin for reading deeplabcut data files.
-        Args:
-            body_parts: list of column names
-            path: path to file
-        """
-        super().__init__(body_parts, path)
+    def __init__(self, body_parts, path,dimensions=2):
+        super().__init__(body_parts, path,2)
         if path is not None and os.path.exists(path):
             self.data = pd.read_csv(path, header=[0, 1, 2], index_col=0, dtype='unicode')
         else:

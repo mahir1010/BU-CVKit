@@ -7,14 +7,25 @@ from cvkit.utils import MAGIC_NUMBER
 
 
 class MetaProcessor:
+    """ It contains Metadata for the Processor class. It contains the Processor class, the name of the package it belongs, and the type of the processor.
+
+
+    :param plugin_name: Name of the plugin to which the processor belongs.
+    :type plugin_name: str
+    :param processor_type: Indicates whether it is "generative","filter", or "util"
+    :type processor_type: str
+    :param processor_class: Reference to the Processor class
+    :type processor_class: :py:class`~cvkit.pose_estimation.processors.processor_interface.Processor`
+    """
+
     def __init__(self, plugin_name, processor_type, processor_class):
+
         self.plugin_name = plugin_name
         self.processor_type = processor_type
         self.processor_class = processor_class
 
     def __str__(self):
         return f'{self.plugin_name} - {self.processor_type} - {self.processor_class.PROCESSOR_NAME}'
-
 
 discovered_pe_processors = {}
 
@@ -40,6 +51,11 @@ abstract_processor_class = getattr(importlib.import_module(f'cvkit.pose_estimati
 
 
 def register_processor(processor: MetaProcessor):
+    """Registers discovered Processor.
+
+    :param processor: The metadata of the plugin that is to be registered.
+    :type processor: :py:class:`~cvkit.MetaProcessor`
+    """
     if processor.processor_class.PROCESSOR_ID not in discovered_pe_processors:
         discovered_pe_processors[processor.processor_class.PROCESSOR_ID] = processor
 
@@ -81,10 +97,24 @@ for plugin in pose_estimation_plugin:
 
 
 def get_processor_class(processor_id):
+    """Get Processor class from the Processor ID.
+
+    :param processor_id: Unique identifier for a Processor
+    :type processor_id: str
+    :return: Processor class
+    :rtype: class
+    """
     meta_class = discovered_pe_processors.get(processor_id, None)
     if meta_class:
         return meta_class.processor_class
 
 
 def verify_installed_processor(processor_id):
+    """Checks whether the processor id was registered.
+
+    :param processor_id: The unique identifier of the Processor.
+    :type processor_id: str
+    :return: Whether the given Processor was registered.
+    :rtype: bool
+    """
     return processor_id in discovered_pe_processors

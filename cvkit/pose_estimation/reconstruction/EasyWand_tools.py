@@ -62,11 +62,11 @@ def update_alignment_matrices(config: PoseEstimationConfig, source_views: list):
         rotation_matrix = Rotation.align_vectors([x_max - origin, y_max - origin], [[1, 0, 0], [0, 1, 0]])[
             0].as_matrix()
         origin = Part(rotate(DLTrecon(3, len(origin_2D), dlt_coefficients, origin_2D), rotation_matrix,
-                             multiplier=config.axis_rotation_3D), "origin", 1)
+                             axis_alignment_vector=config.axis_rotation_3D), "origin", 1)
         x_max = Part(rotate(DLTrecon(3, len(x_max_2D), dlt_coefficients, x_max_2D), rotation_matrix,
-                            multiplier=config.axis_rotation_3D), "x_max", 1)
+                            axis_alignment_vector=config.axis_rotation_3D), "x_max", 1)
         y_max = Part(rotate(DLTrecon(3, len(y_max_2D), dlt_coefficients, y_max_2D), rotation_matrix,
-                            multiplier=config.axis_rotation_3D), "y_max", 1)
+                            axis_alignment_vector=config.axis_rotation_3D), "y_max", 1)
         config.computed_scale = (config.scale / magnitude(x_max - origin) + config.scale / magnitude(
             y_max - origin)) / 2
         trans_mat = -origin

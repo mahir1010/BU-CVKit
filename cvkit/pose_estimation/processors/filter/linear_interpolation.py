@@ -21,9 +21,10 @@ class LinearInterpolationFilter(Processor):
         self._data_store = data_store
         self._data_ready = False
         self._progress = 0
-        if not self._data_store.verify_stats():
-            raise Exception("This process requires data-frame statistics."
-                            "\nPlease run ClusterAnalysis before this one")
+        #TODO: Fix multi-threaded stats verification.
+        # if not self._data_store.verify_stats():
+        #     raise Exception("This process requires data-frame statistics."
+        #                     "\nPlease run ClusterAnalysis before this one")
         for index, candidate in enumerate(self._data_store.stats.iter_na_clusters(self.target_column)):
             self._progress = int(index / len(self._data_store) * 100)
             if candidate['begin'] == 0 or candidate['end'] == len(self._data_store) - 1:
