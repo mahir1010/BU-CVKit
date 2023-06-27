@@ -33,7 +33,7 @@ In addition, the Skeleton object supports further Pose-Estimation-specific featu
 <p align="center"><img src="docs/images/data_reader.png" style="width: 60%;max-width: 500px"></p>
 
 #### Part Class
-It represents a single marker or a body part of the animal. Internally it is represented by n-dimensional `numpy` array. Therefore, it supports wide range of computational methods provided by the numpy library.
+It represents a single marker or a body part of the animal. Internally it is represented by an n-dimensional `numpy` array. Therefore, it supports a wide range of computational methods provided by the numpy library.
 The validity of a `Part` instance is defined by its `likelihood' $\in [0.0,1.0]$ value.
 
 Example:
@@ -61,7 +61,7 @@ mouse_1_snout = mouse_1_snout * 2
 # non-uniformly scale mouse 2
 mouse_2_snout = mouse_2_snout * [1,2,1]
 
-# You can check the likelihood of the data by either accessing likelihood attribute
+# You can check the likelihood of the data by either accessing the likelihood attribute
 # or by directly comparing the Part object
 is_mouse_1_valid = mouse_1_snout.likelihood > 0.7
 # or
@@ -84,7 +84,7 @@ likelihood_map_1 = {'snout':0.7,'headBase':0.8}
 current_behaviours = ['rearing']
 
 # Skeleton at t = 0
-# (list of bodyparts, data dictionary, likelihood dictionary, behaviour list (default empty), dimensions (default 3)
+# (list of body parts, data dictionary, likelihood dictionary, behavior list (default empty), dimensions (default 3)
 skeleton_1 = Skeleton(body_parts,data_map_1,likelihood_map_1,current_behaviours)
 
 data_map_2 = {'snout':[100,300,50],'headBase':[100,270,100]}
@@ -122,7 +122,7 @@ skeleton_1 = skeleton_1.normalize(min_coordinates,max_coordinates)
 ```
 
 
-As of now, we have released 3 implementation of the [`DataStoreInterface`](https://bu-cvkit.readthedocs.io/en/latest/cvkit.pose_estimation.data_readers.html#cvkit.pose_estimation.data_readers.datastore_interface.DataStoreInterface).
+As of now, we have released 3 implementations of the [`DataStoreInterface`](https://bu-cvkit.readthedocs.io/en/latest/cvkit.pose_estimation.data_readers.html#cvkit.pose_estimation.data_readers.datastore_interface.DataStoreInterface).
 1. [`CVKitDataStore3D`](https://bu-cvkit.readthedocs.io/en/latest/cvkit.pose_estimation.data_readers.html#cvkit.pose_estimation.data_readers.cvkit_datastore.CVKitDataStore3D) : Our n-dimensional data interface that stores list of coordinates per cell in a csv file. 
 2. [`DeeplabcutDataStore`](https://bu-cvkit.readthedocs.io/en/latest/cvkit.pose_estimation.data_readers.html#cvkit.pose_estimation.data_readers.deeplabcut_datastore.DeeplabcutDataStore) : Following the data structure of [DeepLabCut](https://github.com/DeepLabCut/DeepLabCut),  a feature-rich pose-estimation toolkit widely used in the research community.
 3. [`FlattenedDataStore`](https://bu-cvkit.readthedocs.io/en/latest/cvkit.pose_estimation.data_readers.html#cvkit.pose_estimation.data_readers.flattened_datastore.FlattenedDataStore) : n-dimensional data interface that flattens all dimensions to separate csv cells. 
@@ -164,10 +164,10 @@ condition = skeleton['snout'].likelihood < skeleton['headBase'].likelihood
 <img align="right" src="docs/images/perf_comp.png" style="width: 60%;max-width: 500px">
 
 BU-CVKit contains an abstract buffered VideoReader class that can be extended to provide sequential or random access to video frames using different backbone libraries.
-With our package, we provide buffered implementation of [OpenCV](https://github.com/opencv/opencv-python), [Deffcode](https://github.com/abhiTronix/deffcode),
+With our package, we provide buffered implementations of [OpenCV](https://github.com/opencv/opencv-python), [Deffcode](https://github.com/abhiTronix/deffcode),
 [Decord](https://github.com/dmlc/decord), and an Image plugin, which supports reading a directory of images and providing them as a video stream to support the data format adopted by the datasets.
-The figure shows performance for single stream sequential read performance on a standard computer. However, the buffered VideoReaders inherently use multi-threading to fill buffers, 
-therefore a performance improvement can be noticed while reading multiple streams parallely.
+The figure shows the performance for single stream sequential read performance on a standard computer. However, the buffered VideoReaders inherently use multi-threading to fill buffers, 
+therefore a performance improvement can be noticed while reading multiple streams parallelly.
 
 
 Example:
