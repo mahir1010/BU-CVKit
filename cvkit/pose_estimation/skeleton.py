@@ -9,6 +9,17 @@ class Part(np.ndarray):
     """
     Represents a body part of the tracked subject.
 
+    .. highlight:: python
+    .. code-block:: python
+
+        #2D Part pointing to l_eye with 0.7 likelihood.
+        part = Part([100,200],'l_eye',0.7)
+        #3D Part pointing to l_eye with 0.5 likelihood.
+        part_l_eye_3d = Part([100,100,50],'l_eye',0.5)
+        #3D Part pointing to r_eye with 0.5 likelihood.
+        part_r_eye_3d = Part([100,100,50],'r_eye',0.5)
+        #3D Part pointing to eye_mid with 0.5 likelihood.
+        part_eye_mid_3d = (part_l_eye_3d + part_r_eye_3d)/2
 
     :param arr: Array of N values defining the position in N-dimensional space
     :param_type arr: list,:class:'numpy.ndarray'
@@ -154,6 +165,47 @@ class Part(np.ndarray):
 class Skeleton:
     """ This class represents the skeleton of the tracked subject.
 
+    .. highlight:: python
+    .. code-block:: python
+
+        body_parts = ['snout','headBase']
+        data_map_1 = {'snout':[200,300,50],'headBase':[200,270,100]}
+        likelihood_map_1 = {'snout':0.7,'headBase':0.8}
+        current_behaviours = ['rearing']
+
+        # Skeleton at t = 0
+        # (list of bodyparts, data dictionary, likelihood dictionary, behaviour list (default empty), dimensions (default 3)
+        # For 2D skeleton set dims = 2
+        skeleton_1 = Skeleton(body_parts,data_map_1,likelihood_map_1,current_behaviours)
+
+        data_map_2 = {'snout':[100,300,50],'headBase':[100,270,100]}
+        likelihood_map_2 = {'snout':0.7,'headBase':0.8}
+
+        # Skeleton at t = 1
+        skeleton_2 = Skeleton(body_parts,data_map_2,likelihood_map_2)
+
+        # Displacement
+        displacement = skeleton_2 - skeleton_1
+        print(displacement['snout'],displacement['headBase'])
+
+        #Head Direction
+        head_direction = skeleton_1['snout'] - skeleton_1['headBase']
+
+        #Support broadcast operations
+        skeleton_1 = skeleton_1 + [10,20,-5]    # non-uniform translation
+        skeleton_1 = skeleton_1 + 5             # uniform translation
+        skeleton_1 = skeleton_1 * 2             # uniform scaling
+        skeleton_1 = skeleton_1 * [0.5,1,0.5]   # non-uniform scaling
+
+        #Supports elementwise operations
+        skeleton_3 = skeleton_1 + skeleton_2
+        skeleton_3 = skeleton_1 * skeleton_2
+
+        #Normalize skeleton between 0 and 1.0
+        min_coordinates = [0,0,0] # Define minimum coordinate values
+        max_coordinates = [1000,1000,500] # Define maximum coordinate values
+        skeleton_1 = skeleton_1.normalize(min_coordinates,max_coordinates)
+
     :param body_parts: list of body parts
     :type body_parts: list[str]
     :param part_map: A dictionary where the key is body part and value is its corresponding n-dimensional data.
@@ -161,16 +213,13 @@ class Skeleton:
     :param likelihood_map: A dictionary where the key is body part and value is its corresponding likelihood data.
     :type likelihood_map: dict
     :param behaviour: list of labels defining the behaviour of the subject at current frame.
-    :type behaviour: list['str']
+    :type behaviour: list[str]
     :param dims: Dimension of underlying data.
     :type dims: int
     """
 
     def __init__(self, body_parts: list, part_map: dict = None, likelihood_map: dict = None, behaviour=[], dims=3):
-        """
 
-
-        """
         self.body_parts = body_parts
         self.body_parts_map = {}
         candidates = body_parts.copy()

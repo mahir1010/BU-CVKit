@@ -110,7 +110,7 @@ skeleton_1 = skeleton_1 * [0.5,1,0.5]   # non-uniform scaling
 skeleton_3 = skeleton_1 + skeleton_2
 skeleton_3 = skeleton_1 * skeleton_2
 
-#Normalize skeleton between 0 to 1.0
+#Normalize skeleton between 0 and 1.0
 min_coordinates = [0,0,0] # Define minimum coordinate values
 max_coordinates = [1000,1000,500] # Define maximum coordinate values
 skeleton_1 = skeleton_1.normalize(min_coordinates,max_coordinates)

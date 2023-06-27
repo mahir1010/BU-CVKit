@@ -8,14 +8,13 @@ from cvkit.pose_estimation import Part
 
 
 def rotate(vector, rotation, scale=1.0, is_inv=False, axis_alignment_vector=None):
-    """
-Rotates a vector with rotation matrix followed by multiplying with axis alignment vector, followed by linear scaling.
-If is_inv is set, the opposite operation is performed. First linear de-scaling, axis alignment, the rotation. Note: Although the function computes scale inverse, it does not compute rotation inverse.
+    """ Rotates a vector with rotation matrix followed by multiplying with axis alignment vector, followed by linear scaling.
+        If is_inv is set, the opposite operation is performed. First linear de-scaling, followed by  axis alignment and rotation. Note: Although the function computes scale inverse, it does not compute rotation inverse.
 
     :param vector: The vector to be rotated
     :param rotation: Rotation Matrix
-    :param scale: Linear Scaling Factor
-    :param is_inv: Flag for deciding flow of operations ('rotate -> axis alignment -> scale' or 'de-scale -> axis alignment -> rotate')
+    :param scale:  Scaling Factor (accepts numpy array defining separate scaling factor for each axis)
+    :param is_inv: Flag for deciding flow of operations ('rotate → axis alignment → scale' or 'de-scale → axis alignment → rotate')
     :return: rotated, scaled, and aligned vector
     """
     if axis_alignment_vector is None:
@@ -30,8 +29,8 @@ If is_inv is set, the opposite operation is performed. First linear de-scaling, 
 
 
 def magnitude(vector):
-    """
-Computes magnitude of the vector
+    """Computes magnitude of the vector
+
     :param vector: Input Vector
     :return: Frobenius norm of the vector
     """
@@ -39,8 +38,8 @@ Computes magnitude of the vector
 
 
 def compute_distance_matrix(skeleton):
-    """
-Generates nxn Euclidean distance matrix for given skeleton where n = number of body parts.
+    """Generates nxn Euclidean distance matrix for given skeleton where n = number of body parts.
+
     :param skeleton: Input skeleton
     :return: nxn numpy array containing Euclidean distance among all body parts.
     """
@@ -50,8 +49,8 @@ Generates nxn Euclidean distance matrix for given skeleton where n = number of b
 
 
 def normalize_vector(vector):
-    """
-Normalized input vector.
+    """Normalized input vector.
+
     :param vector: input vector
     :return: normalized input vector
     """
@@ -59,12 +58,17 @@ Normalized input vector.
 
 
 def get_spherical_coordinates(v1, is_degrees=True, is_shift=True):
-    """
-Computes theta and phi spherical coordinates for input 3D vector
+
+    """Computes theta and phi spherical coordinates for input 3D vector
+
     :param v1: Input Vector
+    :type v1: numpy.ndarray
     :param is_degrees: Interprets input data as degrees or radians
+    :type is_degrees: bool
     :param is_shift: Shifts results by 180° (pi radians)
+    :type is_shift: bool
     :return: [theta,phi] polar coordinates
+    :rtype: tuple
     """
     multiplier = 57.2958 if is_degrees else 1
     shift = (180 if is_degrees else math.pi) if is_shift else 0
@@ -74,12 +78,16 @@ Computes theta and phi spherical coordinates for input 3D vector
 
 
 def spherical_angle_difference(v1, v2, is_abs=True):
-    """
-    Calculates shifted difference (v1-v2) between two spherical coordinate vectors.
-    :param v1: target input vector
-    :param v2: source input vector
+    """Calculates shifted difference (v1-v2) between two spherical coordinate vectors.
+
+    :param v1: Target input vector
+    :type v1: numpy.ndarray
+    :param v2: Source input vector
+    :type v2: numpy.ndarray
     :param is_abs: controls whether the difference is absolute
+    :type is_abs: bool
     :return: shifted spherical angle difference between two vectors
+    :rtype: np.ndarray
     """
     diff = v1 - v2
     absDiff = np.abs(diff)
