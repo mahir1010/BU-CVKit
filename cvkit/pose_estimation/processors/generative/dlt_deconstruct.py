@@ -35,7 +35,7 @@ class DLTDeconstruction(Processor):
         dlt_coefficients = np.array([self.global_config.views[view].dlt_coefficients for view in self.target_views])
         rotation_matrix = np.linalg.inv(np.array(self.global_config.rotation_matrix))
         scale = self.global_config.computed_scale
-        translation_matrix = np.array(self.global_config.translation_matrix) * scale
+        translation_matrix = np.array(self.global_config.translation_vector) * scale
         self._data_ready = False
         self._progress = 0
         for index, skeleton in data_store.row_iterator():
@@ -45,7 +45,7 @@ class DLTDeconstruction(Processor):
             for part in data_store.body_parts:
                 if skeleton[part] > 0:
                     raw_part_3d = rotate(np.array(skeleton[part]) - translation_matrix, rotation_matrix,
-                                         scale, True, axis_alignment_vector=[1, 1, -1])
+                                         scale, True, axis_alignment_vector=self.global_config.axis_rotation_3D)
                     parts_2d = np.round(DLTdecon(dlt_coefficients, raw_part_3d, 3, len(self.target_views)))[0,
                                :].reshape(len(self.target_views), 2)
                     for part_2d, data_store_2d in zip(parts_2d, out_files):

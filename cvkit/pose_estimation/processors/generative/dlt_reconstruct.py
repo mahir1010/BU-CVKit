@@ -30,7 +30,8 @@ class DLTReconstruction(Processor):
         dlt_coefficients = np.array([self.global_config.views[view].dlt_coefficients for view in self.source_views])
         rotation_matrix = np.array(self.global_config.rotation_matrix)
         scale = self.global_config.computed_scale
-        translation_matrix = np.array(self.global_config.translation_matrix) * scale
+        #Scaled translation vector
+        translation_vector = np.array(self.global_config.translation_vector) * scale
         length = len(min(self.data_readers, key=lambda x: len(x)))
         self._data_ready = False
         self._progress = 0
@@ -50,7 +51,7 @@ class DLTReconstruction(Processor):
                     subset = [element for i, element in enumerate(subset) if indices[i]]
                     recon_data[name] = rotate(DLTrecon(3, len(subset), dlt_subset, subset), rotation_matrix,
                                               scale,
-                                              axis_alignment_vector=self.global_config.axis_rotation_3D) + translation_matrix
+                                              axis_alignment_vector=self.global_config.axis_rotation_3D) + translation_vector
                     prob_data[name] = min(subset, key=lambda x: x.likelihood).likelihood
             skeleton_3D = Skeleton(self.global_config.body_parts, recon_data, prob_data)
             self._out_csv.set_skeleton(iterator, skeleton_3D)
