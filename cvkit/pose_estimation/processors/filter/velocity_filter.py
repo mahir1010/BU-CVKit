@@ -29,12 +29,12 @@ class VelocityFilter(Processor):
         for index in range(len(data_store)):
             self._progress = int(index / len(self._data_store) * 100)
             if self.PRINT and self._progress % 10 == 0:
-                print(f'\r {self.PROCESS_NAME} {self._progress}% complete', end='')
+                print(f'\r {self.PROCESSOR_NAME} {self._progress}% complete', end='')
             for body_part in data_store.body_parts:
                 if magnitude(self._velocity_data_store.get_part(index, body_part)) > self.threshold_velocity:
                     data_store.delete_part(index, body_part, True)
         if self.PRINT and self._progress % 10 == 0:
-            print(f'\r {self.PROCESS_NAME} {self._progress}% complete', end='')
+            print(f'\r {self.PROCESSOR_NAME} {self._progress}% complete', end='')
         self._data_ready = True
         self._progress = 100
 

@@ -5,7 +5,6 @@ from glob import glob
 import cv2
 import numpy as np
 
-from cvkit.video_readers.decord_reader import DecordReader
 from cvkit.video_readers.video_reader_interface import BaseVideoReaderInterface
 
 
@@ -16,11 +15,13 @@ def generate_image_sequence_reader(video_path, fps, frame_numbers, output_path=N
     else:
         directory = directory_path = output_path
         os.makedirs(directory_path, exist_ok=True)
-    reader = DecordReader(video_path, fps, 1)
+    reader = cv2.VideoCapture(video_path)
     for index, frame_number in enumerate(frame_numbers):
         if not os.path.exists(os.path.join(directory_path, f'{frame_number}.png')):
-            cv2.imwrite(os.path.join(directory_path, f'{frame_number}.png'),
-                        cv2.cvtColor(reader.random_access_image(frame_number), cv2.COLOR_RGB2BGR))
+            reader.set(cv2.CAP_PROP_POS_FRAMES, frame_number)
+            ret, frame = reader.read()
+            if ret:
+                cv2.imwrite(os.path.join(directory_path, f'{frame_number}.png'),frame)
     return ImageSequenceReader(directory, fps)
 
 

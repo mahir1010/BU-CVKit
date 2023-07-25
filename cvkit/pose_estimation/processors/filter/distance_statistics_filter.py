@@ -32,7 +32,7 @@ class DistanceStatisticsFilter(Processor):
         for index, skeleton in self._data_store.row_iterator():
             self._progress = int(index / len(self._data_store) * 100)
             if self.PRINT and self._progress % 10 == 0:
-                print(f'\r {self.PROCESS_NAME} {self._progress}% complete', end='')
+                print(f'\r {self.PROCESSOR_NAME} {self._progress}% complete', end='')
             distance_matrix = compute_distance_matrix(skeleton)
             difference = np.absolute(distance_matrix_mean - distance_matrix)
             max_score = len(skeleton) + distance_matrix.trace()

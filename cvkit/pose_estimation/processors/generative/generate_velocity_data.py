@@ -32,7 +32,7 @@ class GenerateVelocity(Processor):
         for index, point in self._data_store.part_iterator(self.target_column):
             self._progress = int(index / len(self._data_store) * 100)
             if self.PRINT and self._progress % 10 == 0:
-                print(f'\r {self.PROCESS_NAME} {self._progress}% complete', end='')
+                print(f'\r {self.PROCESSOR_NAME} {self._progress}% complete', end='')
             velocity = [MAGIC_NUMBER, MAGIC_NUMBER, MAGIC_NUMBER]
             flag = False
             if point > self.threshold:
@@ -48,7 +48,7 @@ class GenerateVelocity(Processor):
                     velocity = [MAGIC_NUMBER, MAGIC_NUMBER, MAGIC_NUMBER]
             empty_datastore.set_part(index, Part(velocity, self.target_column, float(flag)))
         if self.PRINT:
-            print(f'\r {self.PROCESS_NAME} 100% complete', end='')
+            print(f'\r {self.PROCESSOR_NAME} 100% complete', end='')
         self._data_ready = True
         self._progress = 100
 

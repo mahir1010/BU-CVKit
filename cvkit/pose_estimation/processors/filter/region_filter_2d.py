@@ -18,11 +18,14 @@ class RegionFilter2D(Processor):
         self._data_store = data_store
         self._data_ready = False
         self._progress = 0
-        uncertainty_regions = np.load(self.uncertainty_regions)
+        if type(self.uncertainty_regions)==str:
+            uncertainty_regions = np.load(self.uncertainty_regions)
+        else:
+            uncertainty_regions = self.uncertainty_regions
         for index, skeleton in data_store.row_iterator():
             self._progress = int(index / len(self._data_store) * 100)
             if self.PRINT and self._progress % 10 == 0:
-                print(f'\r {self.PROCESS_NAME} {self._progress}% complete', end='')
+                print(f'\r {self.PROCESSOR_NAME} {self._progress}% complete', end='')
             for part in data_store.body_parts:
                 for uncertainty_region in uncertainty_regions:
                     if uncertainty_region[0][0] < skeleton[part][0] < uncertainty_region[0][1] and \
@@ -31,7 +34,7 @@ class RegionFilter2D(Processor):
                         data_store.delete_part(index, part, force_remove=True)
                         break
         if self.PRINT and self._progress % 10 == 0:
-            print(f'\r {self.PROCESS_NAME} {self._progress}% complete', end='')
+            print(f'\r {self.PROCESSOR_NAME} {self._progress}% complete', end='')
         self._data_ready = True
         self._progress = 100
 

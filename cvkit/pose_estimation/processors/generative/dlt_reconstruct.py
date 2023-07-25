@@ -22,11 +22,12 @@ class DLTReconstruction(Processor):
         self.global_config = global_config
         self.threshold = threshold
         self.source_views = source_views
-        self.data_readers = [data_readers[source_view] for source_view in source_views]
+        self.data_readers = data_readers
         self._out_csv = None
 
     def process(self, data_store):
         self._out_csv = CVKitDataStore3D(self.global_config.body_parts, None)
+        self.data_readers = [self.data_readers[source_view] for source_view in self.source_views]
         dlt_coefficients = np.array([self.global_config.views[view].dlt_coefficients for view in self.source_views])
         rotation_matrix = np.array(self.global_config.rotation_matrix)
         scale = self.global_config.computed_scale

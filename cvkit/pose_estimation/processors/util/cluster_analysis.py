@@ -22,7 +22,7 @@ class ClusterAnalysis(Processor):
             for index, skeleton in self._data_store.row_iterator():
                 self._progress = int(index / len(self._data_store) * 100)
                 if self.PRINT and self._progress % 10 == 0:
-                    print(f'\r {self.PROCESS_NAME} {self._progress}% complete', end='')
+                    print(f'\r {self.PROCESSOR_NAME} {self._progress}% complete', end='')
                 accurate = True
                 acc_count = len(data_store.body_parts)
                 for part in body_parts:
@@ -34,7 +34,7 @@ class ClusterAnalysis(Processor):
                 if accurate:
                     stats.update_cluster_info(index, '', True)
             if self.PRINT and self._progress % 10 == 0:
-                print(f'\r {self.PROCESS_NAME} {self._progress}% complete', end='')
+                print(f'\r {self.PROCESSOR_NAME} {self._progress}% complete', end='')
             self._data_store.set_stats(stats)
         self._data_ready = True
         self._progress = 100
