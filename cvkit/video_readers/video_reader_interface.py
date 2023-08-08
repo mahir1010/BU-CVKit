@@ -99,5 +99,8 @@ class BaseVideoReaderInterface(ABC):
         """
         pass
 
+    def delete_frame(self,position):
+        raise NotImplementedError("Frame Deletion not supported")
+
     def __len__(self):
         return self.get_number_of_frames()

@@ -9,19 +9,18 @@ from cvkit.video_readers.video_reader_interface import BaseVideoReaderInterface
 
 
 def generate_image_sequence_reader(video_path, fps, frame_numbers, output_path=None):
+    from cvkit.video_readers.deffcode_reader import DeffcodeVideoReader
     if output_path == None:
         directory = tempfile.TemporaryDirectory()
         directory_path = tempfile.name
     else:
         directory = directory_path = output_path
         os.makedirs(directory_path, exist_ok=True)
-    reader = cv2.VideoCapture(video_path)
+    reader = DeffcodeVideoReader(video_path,fps,12)
     for index, frame_number in enumerate(frame_numbers):
         if not os.path.exists(os.path.join(directory_path, f'{frame_number}.png')):
-            reader.set(cv2.CAP_PROP_POS_FRAMES, frame_number)
-            ret, frame = reader.read()
-            if ret:
-                cv2.imwrite(os.path.join(directory_path, f'{frame_number}.png'),frame)
+            frame = cv2.cvtColor(reader.random_access_image(frame_number),cv2.COLOR_RGB2BGR)
+            cv2.imwrite(os.path.join(directory_path, f'{frame_number}.png'),frame)
     return ImageSequenceReader(directory, fps)
 
 
@@ -55,6 +54,9 @@ class ImageSequenceReader(BaseVideoReaderInterface):
 
     def pause(self) -> None:
         pass
+
+    def delete_frame(self,position):
+        return self.images.pop(position)
 
     def __init__(self, video_path, fps, file_formats=['[jJ][pP][gG]', '[pP][nN][gG]', '[bB][mM][pP]']):
 
