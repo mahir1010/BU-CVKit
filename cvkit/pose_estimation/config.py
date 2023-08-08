@@ -43,9 +43,9 @@ class AnnotationConfig:
     :param data_dictionary: dictionary containing annotation meta-data.
     :type data_dictionary: dict
     """
-    def __init__(self, data_dictionary):
+    def __init__(self, name,data_dictionary):
 
-        self.view = data_dictionary.get('view', None) #: Name of the camera
+        self.view = name #: Name of the camera
         self.annotation_file = data_dictionary['annotation_file'] #: Path of the annotation data file.
         self.annotation_file_flavor = data_dictionary['annotation_file_flavor'] #: Flavor of the data file. Refer :py:attr::py:attr:`cvkit.pose_estimation.data_readers.datastore_interface.DataStoreInterface.FLAVOR`
         self.video_file = data_dictionary['video_file'] #: Path to the video file
@@ -57,8 +57,7 @@ class AnnotationConfig:
         self.video_reader = data_dictionary['video_reader'] #: Flavor of the video file. Refer :py:attr:`cvkit.video_readers.video_reader_interface.BaseVideoReaderInterface.FLAVOR`
 
     def export_dict(self):
-        return {'view': self.view,
-                'annotation_file': self.annotation_file,
+        return {'annotation_file': self.annotation_file,
                 'annotation_file_flavor': self.annotation_file_flavor,
                 'video_file': self.video_file,
                 'video_reader': self.video_reader
@@ -205,7 +204,7 @@ class PoseEstimationConfig:
             for annotation_view in self.data_dictionary['annotation']:
                 assert annotation_view != 'Reconstruction' and annotation_view != 'Sync'
                 data = self.data_dictionary['annotation'][annotation_view]
-                self.annotation_views[annotation_view] = AnnotationConfig(data)
+                self.annotation_views[annotation_view] = AnnotationConfig(annotation_view,data)
         self.views = {} #: A dictionary mapping view names to camera information - :py:class:`~cvkit.pose_estimation.config.CameraViews`.
         if 'views' in self.data_dictionary:
             for view in self.data_dictionary['views']:
@@ -219,7 +218,7 @@ class PoseEstimationConfig:
         self.computed_scale = self.data_dictionary['Reconstruction'].get('computed_scale', self.scale) #: Computed scale factor based on pre-known distances to reduce reconstruction noise
         self.translation_vector = np.array(self.data_dictionary['Reconstruction'].get('translation_vector', [0, 0, 0]),
                                            dtype=np.float32) #: Fixed 3-D translational vector for reconstructed data.
-        self.reconstruction_algorithm = self.data_dictionary.get('reconstruction_algorithm', 'default') #: Reconstruction algorithm. Auto-Subset: Picks at least 2 views based on likelihood values. Regular: Only reconstructs if all views have likelihood higher than the threshold.
+        self.reconstruction_algorithm = self.data_dictionary['Reconstruction'].get('reconstruction_algorithm', 'default') #: Reconstruction algorithm. Auto-Subset: Picks at least 2 views based on likelihood values. Regular: Only reconstructs if all views have likelihood higher than the threshold.
 
     def export_dict(self):
         return {'name': self.project_name,
@@ -242,7 +241,6 @@ class PoseEstimationConfig:
                     'axis_rotation_3D': self.axis_rotation_3D.tolist()
                 }
                 }
-
 
 def save_config(path, data_dict):
     """ Saves given data dictionary to Yaml file
