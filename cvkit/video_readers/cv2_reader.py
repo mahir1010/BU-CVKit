@@ -26,7 +26,6 @@ class CV2VideoReader(BaseVideoReaderInterface):
             stream.set(cv2.CAP_PROP_POS_FRAMES, position)
             ret, frame = stream.read()
             stream.release()
-            print(sys.getsizeof(frame))
             if ret:
                 return cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 

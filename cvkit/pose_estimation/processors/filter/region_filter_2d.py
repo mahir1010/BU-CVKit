@@ -29,8 +29,7 @@ class RegionFilter2D(Processor):
             for part in data_store.body_parts:
                 for uncertainty_region in uncertainty_regions:
                     if uncertainty_region[0][0] < skeleton[part][0] < uncertainty_region[0][1] and \
-                            uncertainty_region[1][
-                                0] < skeleton[part][1] < uncertainty_region[1][1]:
+                            uncertainty_region[1][0] < skeleton[part][1] < uncertainty_region[1][1]:
                         data_store.delete_part(index, part, force_remove=True)
                         break
         if self.PRINT and self._progress % 10 == 0:
