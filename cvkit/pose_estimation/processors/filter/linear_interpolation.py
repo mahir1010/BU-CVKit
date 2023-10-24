@@ -27,6 +27,8 @@ class LinearInterpolationFilter(Processor):
         #                     "\nPlease run ClusterAnalysis before this one")
         for index, candidate in enumerate(self._data_store.stats.iter_na_clusters(self.target_column)):
             self._progress = int(index / len(self._data_store) * 100)
+            if self.PRINT and self._progress % 10 == 0:
+                print(f'\r {self.PROCESSOR_NAME} {self._progress}% complete', end='')
             if candidate['begin'] == 0 or candidate['end'] == len(self._data_store) - 1:
                 continue
             if candidate['end'] - candidate['begin'] < self.max_cluster_size:
@@ -38,6 +40,8 @@ class LinearInterpolationFilter(Processor):
                 for i in range(candidate['begin'], candidate['end'] + 1):
                     self._data_store.set_part(i, current)
                     current += vector
+        if self.PRINT and self._progress % 10 == 0:
+            print(f'\r {self.PROCESSOR_NAME} {self._progress}% complete', end='')
         self._data_ready = True
         self._progress = 100
 

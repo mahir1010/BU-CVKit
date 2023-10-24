@@ -16,6 +16,8 @@ class MedianDistanceFilter(Processor):
         self._progress = 0
         for index, skeleton in self._data_store.row_iterator():
             self._progress = int(index / len(self._data_store) * 100)
+            if self.PRINT and self._progress % 10 == 0:
+                print(f'\r {self.PROCESSOR_NAME} {self._progress}% complete', end='')
             for part in self._data_store.body_parts:
                 point = skeleton[part]
                 if point.likelihood >= self.threshold:
@@ -25,6 +27,8 @@ class MedianDistanceFilter(Processor):
                     distances = distances[distances != 0]
                     if len(distances) != 0 and np.median(distances) > self.distance_threshold:
                         self._data_store.delete_part(index, part)
+        if self.PRINT:
+            print(f'\r {self.PROCESSOR_NAME} 100% complete', end='')
         self._data_ready = True
         self._progress = 100
 

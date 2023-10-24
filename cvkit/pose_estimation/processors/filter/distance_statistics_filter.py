@@ -36,7 +36,6 @@ class DistanceStatisticsFilter(Processor):
             distance_matrix = compute_distance_matrix(skeleton)
             difference = np.absolute(distance_matrix_mean - distance_matrix)
             max_score = len(skeleton) + distance_matrix.trace()
-
             if max_score == 0:
                 continue
             scores = np.array([max_score] * len(skeleton))
@@ -51,7 +50,8 @@ class DistanceStatisticsFilter(Processor):
                     removed_count[i] += 1
                     data_store.delete_part(index, body_parts[i])
         self._data_ready = True
-        print("\nremoved: ", {body_parts[k]: removed_count[k] for k in range(len(data_store.body_parts))})
+        if self.PRINT:
+            print("\nremoved: ", {body_parts[k]: removed_count[k] for k in range(len(data_store.body_parts))})
         self._progress = 100
 
     def get_output(self):
