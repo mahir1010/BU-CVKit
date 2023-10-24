@@ -28,6 +28,7 @@ class Part(np.ndarray):
     :param likelihood: A value indicating confidence in the accuracy of the position defined by arr
     :param_type likelihood: float
     """
+
     def __new__(cls, arr, name, likelihood):
 
         obj = np.asarray(arr).view(cls)
@@ -35,6 +36,25 @@ class Part(np.ndarray):
         obj.name = name
         obj.likelihood = likelihood
         return obj
+
+    def __array_ufunc__(self, ufunc, method, *inputs, **kwargs):
+        f = {
+            "reduce": ufunc.reduce,
+            "accumulate": ufunc.accumulate,
+            "reduceat": ufunc.reduceat,
+            "outer": ufunc.outer,
+            "at": ufunc.at,
+            "__call__": ufunc,
+        }
+        INPUTS = [i.view(np.ndarray) if type(i) == Part else i for i in inputs]
+        if "out" in kwargs:
+            del kwargs["out"]
+        output = f[method](*INPUTS, **kwargs)
+        if hasattr(self, "name"):
+            output = Part(output, self.name,
+                          self.likelihood)
+            output.__dict__ = self.__dict__
+        return output
 
     def distance(self, obj):
         assert len(obj) == len(self)
@@ -218,7 +238,8 @@ class Skeleton:
     :type dims: int
     """
 
-    def __init__(self, body_parts: list, part_map: dict = None, likelihood_map: dict = None, behaviour=[], dims=3):
+    def __init__(self, body_parts: list, part_map: dict = None, likelihood_map: dict = None, behaviour: list = [],
+                 dims=3):
 
         self.body_parts = body_parts
         self.body_parts_map = {}
@@ -235,10 +256,10 @@ class Skeleton:
         for name in candidates:
             self.body_parts_map[name] = Part([MAGIC_NUMBER] * dims, name, .0)
 
-    def __getitem__(self, item):
+    def __getitem__(self, item) -> Part:
         return self.body_parts_map[item] if item in self.body_parts_map.keys() else None
 
-    def __setitem__(self, name, val):
+    def __setitem__(self, name, val: Part):
         self.body_parts_map[name] = val
 
     def __str__(self):
@@ -252,54 +273,54 @@ class Skeleton:
         prob = {}
         for name in self.body_parts_map:
             val[name] = (other[name] - self[name]) if type(other) == Skeleton else other - self[name]
-            if type(other) == Skeleton:
-                prob[name] = min(self[name].likelihood, other[name].likelihood)
-        return Skeleton(list(self.body_parts_map.keys()), None, val, prob)
+            prob[name] = min(self[name].likelihood, other[name].likelihood) if type(other) == Skeleton else self[
+                name].likelihood
+        return Skeleton(list(self.body_parts_map.keys()), val, prob)
 
     def __sub__(self, other):
         val = {}
         prob = {}
         for name in self.body_parts_map:
             val[name] = (self[name] - other[name]) if type(other) == Skeleton else self[name] - other
-            if type(other) == Skeleton:
-                prob[name] = min(self[name].likelihood, other[name].likelihood)
-        return Skeleton(list(self.body_parts_map.keys()), None, val, prob)
+            prob[name] = min(self[name].likelihood, other[name].likelihood) if type(other) == Skeleton else self[
+                name].likelihood
+        return Skeleton(list(self.body_parts_map.keys()), val, prob)
 
     def __radd__(self, other):
         val = {}
         prob = {}
         for name in self.body_parts_map:
             val[name] = (self[name] + other[name]) if type(other) == Skeleton else self[name] + other
-            if type(other) == Skeleton:
-                prob[name] = min(self[name].likelihood, other[name].likelihood)
-        return Skeleton(list(self.body_parts_map.keys()), None, val, prob)
+            prob[name] = min(self[name].likelihood, other[name].likelihood) if type(other) == Skeleton else self[
+                name].likelihood
+        return Skeleton(list(self.body_parts_map.keys()), val, prob)
 
     def __add__(self, other):
         val = {}
         prob = {}
         for name in self.body_parts_map:
             val[name] = (self[name] + other[name]) if type(other) == Skeleton else self[name] + other
-            if type(other) == Skeleton:
-                prob[name] = min(self[name].likelihood, other[name].likelihood)
-        return Skeleton(list(self.body_parts_map.keys()), None, val, prob)
+            prob[name] = min(self[name].likelihood, other[name].likelihood) if type(other) == Skeleton else self[
+                name].likelihood if type(other) == Skeleton else self[name].likelihood
+        return Skeleton(list(self.body_parts_map.keys()), val, prob)
 
     def __mul__(self, other):
         val = {}
         prob = {}
         for name in self.body_parts_map:
             val[name] = (self[name] * other[name]) if type(other) == Skeleton else self[name] * other
-            if type(other) == Skeleton:
-                prob[name] = min(self[name].likelihood, other[name].likelihood)
-        return Skeleton(list(self.body_parts_map.keys()), None, val, prob)
+            prob[name] = min(self[name].likelihood, other[name].likelihood) if type(other) == Skeleton else self[
+                name].likelihood
+        return Skeleton(list(self.body_parts_map.keys()), val, prob)
 
     def __rmul__(self, other):
         val = {}
         prob = {}
         for name in self.body_parts_map:
             val[name] = (self[name] * other[name]) if type(other) == Skeleton else self[name] * other
-            if type(other) == Skeleton:
-                prob[name] = min(self[name].likelihood, other[name].likelihood)
-        return Skeleton(list(self.body_parts_map.keys()), None, val, prob)
+            prob[name] = min(self[name].likelihood, other[name].likelihood) if type(other) == Skeleton else self[
+                name].likelihood
+        return Skeleton(list(self.body_parts_map.keys()), val, prob)
 
     def __eq__(self, other):
         try:
@@ -335,3 +356,6 @@ class Skeleton:
             part_map[part] = normalize_fn(self.body_parts_map[part])
             likelihood_map[part] = self.body_parts_map[part].likelihood
         return Skeleton(self.body_parts, part_map, likelihood_map, self.behaviour)
+
+    def numpy(self):
+        return np.array([self.body_parts_map[key] for key in self.body_parts])
