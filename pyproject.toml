@@ -3,7 +3,7 @@ requires = ["setuptools>=67.0"]
 build-backend = "setuptools.build_meta"
 [project]
 name = "bu_cvkit"
-version = "0.0.3.1"
+version = "0.0.3.2"
 authors = [
     { name = "Mahir Patel", email = "mahirp@bu.edu" },
 ]
