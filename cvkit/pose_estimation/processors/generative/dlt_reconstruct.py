@@ -2,11 +2,11 @@ import numpy as np
 
 from cvkit.pose_estimation import Skeleton
 from cvkit.pose_estimation.config import PoseEstimationConfig
-from cvkit.pose_estimation.data_readers.cvkit_datastore import CVKitDataStore3D
+from cvkit.pose_estimation.data_readers import SequentialDatastoreBuilder, CVKitDataStore3D
 from cvkit.pose_estimation.processors.processor_interface import Processor, ProcessorMetaData
 from cvkit.pose_estimation.reconstruction.DLT import DLTrecon
 from cvkit.pose_estimation.utils import rotate
-
+import pandas as pd
 
 class DLTReconstruction(Processor):
     PROCESSOR_NAME = "Reconstruction"
@@ -26,7 +26,7 @@ class DLTReconstruction(Processor):
         self._out_csv = None
 
     def process(self, data_store):
-        self._out_csv = CVKitDataStore3D(self.global_config.body_parts, None)
+        builder = SequentialDatastoreBuilder(CVKitDataStore3D.FLAVOR,self.global_config.body_parts)
         self.data_readers = [self.data_readers[source_view] for source_view in self.source_views]
         dlt_coefficients = np.array([self.global_config.views[view].dlt_coefficients for view in self.source_views])
         rotation_matrix = np.array(self.global_config.rotation_matrix)
@@ -55,7 +55,8 @@ class DLTReconstruction(Processor):
                                               axis_alignment_vector=self.global_config.axis_rotation_3D) + translation_vector
                     prob_data[name] = min(subset, key=lambda x: x.likelihood).likelihood
             skeleton_3D = Skeleton(self.global_config.body_parts, recon_data, prob_data)
-            self._out_csv.set_skeleton(iterator, skeleton_3D)
+            builder.append(skeleton_3D)
+        self._out_csv = builder.get_datastore()
         self._progress = 100
         self._data_ready = True
 
