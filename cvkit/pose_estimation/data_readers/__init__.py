@@ -1,5 +1,5 @@
 import csv
-import os
+import os, pandas as pd
 
 from cvkit.pose_estimation.data_readers.cvkit_datastore import CVKitDataStore3D
 from cvkit.pose_estimation.data_readers.datastore_interface import DataStoreInterface, DataStoreStats
@@ -49,3 +49,30 @@ def convert_data_flavor(source: DataStoreInterface, target: DataStoreInterface):
         if index % 200 == 0:
             print(f'\r{index}/{len(source)}', end='')
         writer.writerow(target.convert_to_list(index, skeleton))
+
+
+class SequentialDatastoreBuilder:
+    def __init__(self,flavor, body_parts, dimension=3,buffer_size=1024):
+        self.data_store = initialize_datastore_reader(body_parts, None, flavor,dimension)
+        self.buffer_size = buffer_size
+        self.buffer = []
+
+    def append(self,skeleton):
+        if skeleton is not None:
+            self.buffer.append(skeleton.numpy().tolist())
+            self.buffer[-1].append(self.data_store.BEHAVIOUR_SEP.join(skeleton.behaviour))
+        else:
+            self.buffer.append([None]*len(self.data_store.body_parts)+1)
+        if len(self.buffer) >= self.buffer_size:
+            self._flush_buffer()
+    def _flush_buffer(self):
+        if len(self.buffer) >0:
+            self.data_store.data = pd.concat(
+                [self.data_store.data, pd.DataFrame(self.buffer, columns=self.data_store.data.columns)], ignore_index=True)
+            self.buffer.clear()
+    def get_datastore(self):
+        self._flush_buffer()
+        return self.data_store
+
+    def build_empty_skeleton(self):
+        return self.data_store.build_empty_skeleton()

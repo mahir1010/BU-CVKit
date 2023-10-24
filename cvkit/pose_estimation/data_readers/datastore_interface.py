@@ -255,7 +255,7 @@ class DataStoreInterface(ABC):
         for name in self.body_parts:
             part_map[name] = [MAGIC_NUMBER] * self.DIMENSIONS
             likelihood_map[name] = 0.0
-        return Skeleton(self.body_parts, part_map=part_map, likelihood_map=likelihood_map, behaviour='',
+        return Skeleton(self.body_parts, part_map=part_map, likelihood_map=likelihood_map, behaviour=[''],
                         dims=self.DIMENSIONS)
 
     def __len__(self):
@@ -302,6 +302,10 @@ class DataStoreInterface(ABC):
         :rtype: list
         """
         return [self.body_parts]
+
+    def allocate(self,n):
+        self.data = pd.concat([self.data,pd.DataFrame(columns=self.data.columns, index=range(n))])
+        self.data.sort_index(inplace=True)
 
 
 class DataStoreStats:
@@ -378,13 +382,15 @@ class DataStoreStats:
         pose_data = []
         cluster = {'begin': -2, 'end': -2}
         for index, occupancy in enumerate(self.occupancy_data):
-            if min_occupancy <= occupancy <= max_occupancy:
+            if min_occupancy <= occupancy < max_occupancy:
                 if cluster['end'] + 1 == index:
                     cluster['end'] = index
                 else:
                     if cluster['begin'] != -2:
                         pose_data.append(cluster.copy())
                     cluster['begin'] = cluster['end'] = index
+        if cluster['begin']!=cluster['end'] and pose_data[-1]['end']!=cluster['end']:
+            pose_data.append(cluster.copy())
         return pose_data
 
     def intersect_accurate_data_points(self, accurate_clusters):
