@@ -5,7 +5,9 @@ import numpy as np
 
 from cvkit import MAGIC_NUMBER
 from cvkit.pose_estimation import Part
-
+from cvkit.pose_estimation.config import CameraViews
+from cvkit.utils import build_intrinsic
+import cv2
 
 def rotate(vector, rotation, scale=1.0, is_inv=False, axis_alignment_vector=None):
     """ Rotates a vector with rotation matrix followed by multiplying with axis alignment vector, followed by linear scaling.
@@ -34,7 +36,7 @@ def magnitude(vector):
     :param vector: Input Vector
     :return: Frobenius norm of the vector
     """
-    return np.linalg.norm(vector)
+    return np.linalg.norm(vector,axis=0)
 
 
 def compute_distance_matrix(skeleton):
@@ -57,24 +59,16 @@ def normalize_vector(vector):
     return np.divide(vector, magnitude(vector))
 
 
-def get_spherical_coordinates(v1, is_degrees=True, is_shift=True):
-
-    """Computes theta and phi spherical coordinates for input 3D vector
-
+def get_spherical_coordinates(v1, is_degrees=True):
+    """
+Computes theta and phi spherical coordinates for input 3D vector
     :param v1: Input Vector
-    :type v1: numpy.ndarray
     :param is_degrees: Interprets input data as degrees or radians
-    :type is_degrees: bool
-    :param is_shift: Shifts results by 180° (pi radians)
-    :type is_shift: bool
     :return: [theta,phi] polar coordinates
-    :rtype: tuple
     """
     multiplier = 57.2958 if is_degrees else 1
-    shift = (180 if is_degrees else math.pi) if is_shift else 0
     v1 = v1 / magnitude(v1)
-    return np.array([math.atan2(v1[1], v1[0]),
-                     math.atan2(magnitude(v1[:2]), v1[2])]) * multiplier + shift
+    return np.array([math.atan2(v1[1], v1[0]),math.acos(v1[2])]) * multiplier
 
 
 def spherical_angle_difference(v1, v2, is_abs=True):
@@ -147,3 +141,9 @@ def generate_distance_matrices(num_parts, data_points: list):
     output_distance_matrices[0] = np.mean(distance_matrices, axis=0)
     output_distance_matrices[1] = np.std(distance_matrices, axis=0)
     return output_distance_matrices
+
+def undistort_point(point:np.ndarray,camera:CameraViews):
+    matrix = build_intrinsic(camera.f_px, camera.principal_point)
+    distortion = camera.distortion
+    point = point.reshape(-1,1,2)
+    return cv2.undistortPoints(point, matrix, distortion, None, matrix).reshape(2,)
