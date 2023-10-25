@@ -1,3 +1,2 @@
 from cvkit.pose_estimation.processors.generative.dlt_deconstruct import DLTDeconstruction
 from cvkit.pose_estimation.processors.generative.dlt_reconstruct import DLTReconstruction
-from cvkit.pose_estimation.processors.generative.generate_velocity_data import GenerateVelocity
