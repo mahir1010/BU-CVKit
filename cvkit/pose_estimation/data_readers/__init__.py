@@ -1,5 +1,7 @@
 import csv
-import os, pandas as pd
+import os
+
+import pandas as pd
 
 from cvkit.pose_estimation.data_readers.cvkit_datastore import CVKitDataStore3D
 from cvkit.pose_estimation.data_readers.datastore_interface import DataStoreInterface, DataStoreStats
@@ -10,7 +12,7 @@ datastore_readers = {DeeplabcutDataStore.FLAVOR: DeeplabcutDataStore,
                      FlattenedDataStore.FLAVOR: FlattenedDataStore, CVKitDataStore3D.FLAVOR: CVKitDataStore3D}
 
 
-def initialize_datastore_reader(body_parts, path, reader_type,dimension=3) -> DataStoreInterface:
+def initialize_datastore_reader(body_parts, path, reader_type, dimension=3) -> DataStoreInterface:
     """Detects underlying class based on reader_type. And generates appropriate :py:class:`~cvkit.pose_estimation.data_readers.datastore_interface.DataStoreInterface` subclass instance.
 
 
@@ -27,7 +29,7 @@ def initialize_datastore_reader(body_parts, path, reader_type,dimension=3) -> Da
     """
     try:
         reader = datastore_readers[reader_type]
-        return reader(body_parts, path,dimension)
+        return reader(body_parts, path, dimension)
     except Exception as e:
         raise Exception(f"Potentially incorrect reader type selected ({reader_type})\n" + str(e))
 
@@ -52,24 +54,29 @@ def convert_data_flavor(source: DataStoreInterface, target: DataStoreInterface):
 
 
 class SequentialDatastoreBuilder:
-    def __init__(self,flavor, body_parts, dimension=3,buffer_size=1024):
-        self.data_store = initialize_datastore_reader(body_parts, None, flavor,dimension)
+    def __init__(self, flavor, body_parts, dimension=3, buffer_size=1024):
+        self.data_store = initialize_datastore_reader(body_parts, None, flavor, dimension)
         self.buffer_size = buffer_size
         self.buffer = []
+        self.current_index = 0
 
-    def append(self,skeleton):
+    def append(self, skeleton):
         if skeleton is not None:
-            self.buffer.append(skeleton.numpy().tolist())
+            self.buffer.append(self.data_store.convert_to_list(self.current_index, skeleton, 0))
             self.buffer[-1].append(self.data_store.BEHAVIOUR_SEP.join(skeleton.behaviour))
         else:
-            self.buffer.append([None]*len(self.data_store.body_parts)+1)
+            self.buffer.append([None] * len(self.data_store.body_parts) + 1)
         if len(self.buffer) >= self.buffer_size:
             self._flush_buffer()
+        self.current_index += 1
+
     def _flush_buffer(self):
-        if len(self.buffer) >0:
+        if len(self.buffer) > 0:
             self.data_store.data = pd.concat(
-                [self.data_store.data, pd.DataFrame(self.buffer, columns=self.data_store.data.columns)], ignore_index=True)
+                [self.data_store.data, pd.DataFrame(self.buffer, columns=self.data_store.data.columns)],
+                ignore_index=True)
             self.buffer.clear()
+
     def get_datastore(self):
         self._flush_buffer()
         return self.data_store
