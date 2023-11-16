@@ -39,14 +39,15 @@ def magnitude(vector):
     return np.linalg.norm(vector,axis=0)
 
 
-def compute_distance_matrix(skeleton):
+def compute_distance_matrix(skeleton,threshold=0.6):
     """Generates nxn Euclidean distance matrix for given skeleton where n = number of body parts.
 
     :param skeleton: Input skeleton
+    :param threshold: Threshold for considering a body part as valid
     :return: nxn numpy array containing Euclidean distance among all body parts.
     """
     return np.array(
-        [[magnitude(skeleton[p1] - skeleton[p2]) if skeleton[p1] > 0 and skeleton[p2] > 0 else -1 for p2 in
+        [[magnitude(skeleton[p1] - skeleton[p2]) if skeleton[p1] > threshold and skeleton[p2] > threshold else -1 for p2 in
           skeleton.body_parts] for p1 in skeleton.body_parts])
 
 
