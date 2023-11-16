@@ -10,16 +10,18 @@ class DistanceStatisticsFilter(Processor):
     META_DATA = {'distance_matrix_mean': ProcessorMetaData('Distance - Mean', ProcessorMetaData.NUMPY_ARRAY),
                  'distance_matrix_sd': ProcessorMetaData('Distance - SD', ProcessorMetaData.NUMPY_ARRAY),
                  'threshold': ProcessorMetaData('Threshold', ProcessorMetaData.FLOAT, 0.5, 0.0, 1.0),
-                 'sd_factor': ProcessorMetaData('SD Scale Factor', ProcessorMetaData.FLOAT, 1.25, 0.0)}
+                 'sd_factor': ProcessorMetaData('SD Scale Factor', ProcessorMetaData.FLOAT, 1.25, 0.0),
+                 'likelihood_threshold': ProcessorMetaData('Likelihood Threshold', ProcessorMetaData.FLOAT, 0.6, 0.0, 1.0)}
     PROCESSOR_SUMMARY = "Uses Mean and Standard deviation of distance among body parts to filter outliers"
 
-    def __init__(self, distance_matrix_mean, distance_matrix_sd, threshold=0.5, sd_factor=1.25):
+    def __init__(self, distance_matrix_mean, distance_matrix_sd, threshold=0.5, sd_factor=1.25,likelihood_threshold=0.6):
         super(DistanceStatisticsFilter, self).__init__()
         assert sd_factor >= 0
         self.distance_matrix_mean = distance_matrix_mean
         self.distance_matrix_sd = distance_matrix_sd
         self.threshold = threshold
         self.sd_factor = sd_factor
+        self.likelihood_threshold = likelihood_threshold
 
     def process(self, data_store):
         self._data_store = data_store
@@ -33,7 +35,7 @@ class DistanceStatisticsFilter(Processor):
             self._progress = int(index / len(self._data_store) * 100)
             if self.PRINT and self._progress % 10 == 0:
                 print(f'\r {self.PROCESSOR_NAME} {self._progress}% complete', end='')
-            distance_matrix = compute_distance_matrix(skeleton)
+            distance_matrix = compute_distance_matrix(skeleton,self.likelihood_threshold)
             difference = np.absolute(distance_matrix_mean - distance_matrix)
             max_score = len(skeleton) + distance_matrix.trace()
             if max_score == 0:

@@ -26,6 +26,7 @@ class MedianDistanceFilter(Processor):
                          for p in self._data_store.body_parts])
                     distances = distances[distances != 0]
                     if len(distances) != 0 and np.median(distances) > self.distance_threshold:
+                        skeleton[part].likelihood=0
                         self._data_store.delete_part(index, part)
         if self.PRINT:
             print(f'\r {self.PROCESSOR_NAME} 100% complete', end='')
