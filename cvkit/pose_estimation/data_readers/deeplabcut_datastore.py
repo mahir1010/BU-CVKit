@@ -113,12 +113,12 @@ class DeeplabcutDataStore(DataStoreInterface):
         part_map = {}
         likelihood_map = {}
         for name in self.body_parts:
-            part_map[name] = [float(row[(self.scorer, name, 'x')]), float(row[(self.scorer, name, 'y')]), 0.0]
+            part_map[name] = [float(row[(self.scorer, name, 'x')]), float(row[(self.scorer, name, 'y')])]
             likelihood_map[name] = float(row[(self.scorer, name, 'likelihood')])
         behaviour = [] if pd.isna(row[(self.scorer, 'behaviour', 'name')]) else row[
             (self.scorer, 'behaviour', 'name')].split(self.BEHAVIOUR_SEP)
         return Skeleton(self.body_parts, part_map=part_map, likelihood_map=likelihood_map,
-                        behaviour=behaviour)
+                        behaviour=behaviour,dims=self.DIMENSIONS)
 
     def get_valid_marker(self, name, threshold=0.01):
         try:
