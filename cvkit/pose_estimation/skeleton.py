@@ -358,4 +358,4 @@ class Skeleton:
         return Skeleton(self.body_parts, part_map, likelihood_map, self.behaviour)
 
     def numpy(self):
-        return np.array([self.body_parts_map[key] for key in self.body_parts])
+        return np.array([self.body_parts_map[key] for key in self.body_parts],dtype=float)
